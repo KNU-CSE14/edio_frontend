@@ -1,5 +1,6 @@
 import MSWProvider from "@/src/shared/msw-provider"
 import QueryProvider from "@/src/shared/query-provider"
+import { Provider } from "jotai"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
@@ -20,7 +21,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <MSWProvider>
-          <QueryProvider>{children}</QueryProvider>
+          <QueryProvider>
+            <Provider>{children}</Provider>
+          </QueryProvider>
         </MSWProvider>
       </body>
     </html>
