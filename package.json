@@ -17,6 +17,7 @@
     "immer": "^10.1.1",
     "jotai": "^2.10.1",
     "next": "14.2.10",
+    "qs": "^6.13.1",
     "react": "^18",
     "react-dom": "^18"
   },
@@ -37,6 +38,7 @@
     "@testing-library/react-hooks": "^8.0.1",
     "@testing-library/user-event": "^14.5.2",
     "@types/node": "^20",
+    "@types/qs": "^6.9.17",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@vanilla-extract/next-plugin": "^2.4.5",
