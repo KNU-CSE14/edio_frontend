@@ -1,5 +1,6 @@
 import MSWProvider from "@/src/shared/msw-provider"
 import QueryProvider from "@/src/shared/query-provider"
+import Sidebar from "@/src/template/Sidebar"
 import { Provider } from "jotai"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
@@ -22,7 +23,10 @@ export default function RootLayout({
       <body className={inter.className}>
         <MSWProvider>
           <QueryProvider>
-            <Provider>{children}</Provider>
+            <Provider>
+              <Sidebar />
+              {children}
+            </Provider>
           </QueryProvider>
         </MSWProvider>
       </body>
