@@ -1,5 +1,5 @@
-import MSWProvider from "@/src/shared/msw-provider"
-import QueryProvider from "@/src/shared/query-provider"
+import MSWProvider from "@/src/shared/MswProvider"
+import QueryProvider from "@/src/shared/QueryProvider"
 import Sidebar from "@/src/template/Sidebar"
 import { Provider } from "jotai"
 import type { Metadata } from "next"
