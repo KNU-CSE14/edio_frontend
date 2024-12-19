@@ -1,6 +1,10 @@
+import {
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/src/shadcn/components/ui/sidebar"
 import MSWProvider from "@/src/shared/MswProvider"
 import QueryProvider from "@/src/shared/QueryProvider"
-import Sidebar from "@/src/template/Sidebar"
+import AppSidebar from "@/src/template/AppSidebar"
 import { Provider } from "jotai"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
@@ -24,8 +28,11 @@ export default function RootLayout({
         <MSWProvider>
           <QueryProvider>
             <Provider>
-              <Sidebar />
-              {children}
+              <SidebarProvider>
+                <AppSidebar />
+                {children}
+                <SidebarTrigger />
+              </SidebarProvider>
             </Provider>
           </QueryProvider>
         </MSWProvider>
