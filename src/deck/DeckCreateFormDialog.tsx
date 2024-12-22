@@ -17,14 +17,32 @@ import {
 import { Input } from "@/src/shadcn/components/ui/input"
 import { Textarea } from "@/src/shadcn/components/ui/textarea"
 import { Label } from "@/src/shadcn/components/ui/label"
+import { useState } from "react"
 
 export function DeckCreateFormDialog({
   open,
   onOpenChangeFn,
 }: DeckCreateFormDialogProps) {
+  // TODO API 연동 후 제거 예정
+  const categories = [
+    { id: "1", name: "Category 1" },
+    { id: "2", name: "Category 2" },
+  ]
+  const directories = [
+    { id: "1", name: "Folder1" },
+    { id: "2", name: "Folder2" },
+  ]
+
+  const [deckTitle, setDeckTitle] = useState("")
+  const [deckDescription, setDeckDescription] = useState("")
+  const [selectCategoryId, setSelectCategory] = useState(categories[0].id)
+  const [selectDirectoryId, setSelectDirectory] = useState(directories[0].id)
+
   const submitCreateDeck = () => {
     // TODO API 연동하기
-    console.log("Created Deck!")
+    console.log(
+      `Created Deck! title = ${deckTitle}, desc = ${deckDescription}, directoryId = ${selectDirectoryId}, categoryId = ${selectCategoryId}`,
+    )
   }
 
   return (
@@ -38,25 +56,31 @@ export function DeckCreateFormDialog({
         <form className="grid gap-4 py-2 sm:gap-6 sm:py-4">
           <div className="grid gap-2">
             <Label htmlFor="folder">폴더</Label>
-            <Select>
+            <Select onValueChange={setSelectDirectory}>
               <SelectTrigger id="folder" className="min-h-[44px]">
-                <SelectValue placeholder="기본" />
+                <SelectValue placeholder={directories[0].name} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="default">기본</SelectItem>
-                <SelectItem value="custom">사용자 정의</SelectItem>
+                {directories.map((directory) => (
+                  <SelectItem key={directory.id} value={directory.id}>
+                    {directory.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
           <div className="grid gap-2">
             <Label htmlFor="category">카테고리 (Category)</Label>
-            <Select defaultValue="english">
+            <Select onValueChange={setSelectCategory}>
               <SelectTrigger id="category" className="min-h-[44px]">
-                <SelectValue placeholder="영어 (English)" />
+                <SelectValue placeholder={categories[0].name} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="english">영어 (English)</SelectItem>
-                <SelectItem value="korean">한국어 (Korean)</SelectItem>
+                {categories.map((category) => (
+                  <SelectItem key={category.id} value={category.id}>
+                    {category.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -66,6 +90,8 @@ export function DeckCreateFormDialog({
               id="title"
               placeholder="EX) 기초 영어 단어"
               className="min-h-[44px]"
+              value={deckTitle}
+              onChange={(event) => setDeckTitle(event.target.value)}
             />
           </div>
           <div className="grid gap-2">
@@ -75,6 +101,8 @@ export function DeckCreateFormDialog({
               placeholder="EX) 기초 영어 단어 500개 공부"
               rows={4}
               className="min-h-[44px]"
+              content={deckDescription}
+              onChange={(e) => setDeckDescription(e.target.value)}
             />
           </div>
           <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
