@@ -3,11 +3,15 @@ import { http, HttpResponse } from "msw"
 export type Method = "GET" | "POST" | "PUT" | "DELETE" | "HEAD" | "PATCH"
 const GET_ACCOUNT = "/api/account"
 const LOGIN = "/oauth2/authorization/google"
+const GET_CATEGORIES = "/api/category"
+const GET_MY_DIRECTORIES = "/api/my-folders/"
 export const completedApi: {
   [key: string]: Method[]
 } = {
   [LOGIN]: ["GET"],
   [GET_ACCOUNT]: ["GET"],
+  [GET_CATEGORIES]: [],
+  [GET_MY_DIRECTORIES]: [],
 }
 const handlers = [
   http.get(`${process.env.NEXT_PUBLIC_MSW_URL}${LOGIN}`, () => {
@@ -41,6 +45,37 @@ const handlers = [
       })
     },
   ),
+  http.get(`${process.env.NEXT_PUBLIC_MSW_URL}${GET_CATEGORIES}`, () => {
+    return HttpResponse.json([
+      {
+        id: "1",
+        name: "Category 1",
+        createdAt: "2024-12-22T00:00:00",
+        updatedAt: "2024-12-22T00:00:00",
+        deleted: false,
+      },
+      {
+        id: "2",
+        name: "Category 2",
+        createdAt: "2024-12-22T00:00:00",
+        updatedAt: "2024-12-22T00:00:00",
+        deleted: false,
+      },
+    ])
+  }),
+  http.get(`${process.env.NEXT_PUBLIC_MSW_URL}${GET_MY_DIRECTORIES}`, () => {
+    // FIXME 관련 API 명세 협의 후 fix 예정
+    return HttpResponse.json([
+      {
+        id: "1",
+        name: "Directory 1",
+      },
+      {
+        id: "2",
+        name: "Directory 2",
+      },
+    ])
+  }),
 ]
 
 export default handlers

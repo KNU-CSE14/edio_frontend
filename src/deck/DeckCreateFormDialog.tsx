@@ -18,25 +18,25 @@ import { Input } from "@/src/shadcn/components/ui/input"
 import { Textarea } from "@/src/shadcn/components/ui/textarea"
 import { Label } from "@/src/shadcn/components/ui/label"
 import { useState } from "react"
+import { useQuery } from "@tanstack/react-query"
+import { getCategories } from "@/src/category/api"
+import { getMyDirectories } from "@/src/folder/api"
 
 export function DeckCreateFormDialog({
   open,
   onOpenChangeFn,
 }: DeckCreateFormDialogProps) {
-  // TODO API 연동 후 제거 예정
-  const categories = [
-    { id: "1", name: "Category 1" },
-    { id: "2", name: "Category 2" },
-  ]
-  const directories = [
-    { id: "1", name: "Folder1" },
-    { id: "2", name: "Folder2" },
-  ]
+  const categories = useQuery(getCategories()).data ?? []
+  const directories = useQuery(getMyDirectories()).data ?? []
 
   const [deckTitle, setDeckTitle] = useState("")
   const [deckDescription, setDeckDescription] = useState("")
-  const [selectCategoryId, setSelectCategory] = useState(categories[0].id)
-  const [selectDirectoryId, setSelectDirectory] = useState(directories[0].id)
+  const [selectCategoryId, setSelectCategory] = useState(
+    categories.length > 0 ? categories[0].id : "",
+  )
+  const [selectDirectoryId, setSelectDirectory] = useState(
+    directories.length > 0 ? directories[0].id : "",
+  )
 
   const submitCreateDeck = () => {
     // TODO API 연동하기
@@ -58,7 +58,7 @@ export function DeckCreateFormDialog({
             <Label htmlFor="folder">폴더</Label>
             <Select onValueChange={setSelectDirectory}>
               <SelectTrigger id="folder" className="min-h-[44px]">
-                <SelectValue placeholder={directories[0].name} />
+                <SelectValue placeholder={directories[0]?.name} />
               </SelectTrigger>
               <SelectContent>
                 {directories.map((directory) => (
@@ -73,7 +73,7 @@ export function DeckCreateFormDialog({
             <Label htmlFor="category">카테고리 (Category)</Label>
             <Select onValueChange={setSelectCategory}>
               <SelectTrigger id="category" className="min-h-[44px]">
-                <SelectValue placeholder={categories[0].name} />
+                <SelectValue placeholder={categories[0]?.name} />
               </SelectTrigger>
               <SelectContent>
                 {categories.map((category) => (
