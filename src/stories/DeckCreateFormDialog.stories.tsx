@@ -6,7 +6,7 @@ import MSWProvider from "@/src/shared/MswProvider"
 import handlers from "@/mocks/handlers"
 
 const meta = {
-  title: "Components/DeckCreateFormDialog",
+  title: "deck/DeckCreateFormDialog",
   component: DeckCreateFormDialog,
   decorators: [
     (Story) => (

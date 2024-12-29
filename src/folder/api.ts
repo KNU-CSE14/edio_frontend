@@ -3,7 +3,7 @@ import { getFetch } from "@/src/shared/util/data/fetcher"
 
 export const GET_MY_DIRECTORIES = "/api/my-folders/"
 export type Directory = {
-  id: string
+  id: number
   name: string
 }
 

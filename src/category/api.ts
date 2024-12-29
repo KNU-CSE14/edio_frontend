@@ -3,7 +3,7 @@ import { getFetch } from "@/src/shared/util/data/fetcher"
 
 export const GET_CATEGORIES = "/api/category"
 export type Category = {
-  id: string
+  id: number
   createdAt: string
   updatedAt: string
   name: string

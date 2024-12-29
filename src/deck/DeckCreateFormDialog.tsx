@@ -18,31 +18,47 @@ import { Input } from "@/src/shadcn/components/ui/input"
 import { Textarea } from "@/src/shadcn/components/ui/textarea"
 import { Label } from "@/src/shadcn/components/ui/label"
 import { useState } from "react"
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import { getCategories } from "@/src/category/api"
 import { getMyDirectories } from "@/src/folder/api"
+import { createNewDeck, queryKey } from "@/src/deck/api"
 
 export function DeckCreateFormDialog({
   open,
   onOpenChangeFn,
 }: DeckCreateFormDialogProps) {
-  const categories = useQuery(getCategories()).data ?? []
-  const directories = useQuery(getMyDirectories()).data ?? []
+  const { data: categories = [] } = useQuery(getCategories())
+  const { data: directories = [] } = useQuery(getMyDirectories())
 
   const [deckTitle, setDeckTitle] = useState("")
   const [deckDescription, setDeckDescription] = useState("")
   const [selectCategoryId, setSelectCategory] = useState(
-    categories.length > 0 ? categories[0].id : "",
+    categories.length > 0 ? categories[0].id : 0,
   )
   const [selectDirectoryId, setSelectDirectory] = useState(
-    directories.length > 0 ? directories[0].id : "",
+    directories.length > 0 ? directories[0].id : 0,
   )
+  const createDeckMutation = useMutation({
+    mutationKey: queryKey,
+    mutationFn: createNewDeck,
+    onSuccess: (variables) => {
+      console.log(`New deck create Success, var = ${JSON.stringify(variables)}`)
+      onOpenChangeFn(false)
+    },
+    onError: (error) => {
+      console.log(`Failed create deck, cause = ${error}`)
+      window.alert(error.message)
+    },
+  })
 
   const submitCreateDeck = () => {
-    // TODO API 연동하기
-    console.log(
-      `Created Deck! title = ${deckTitle}, desc = ${deckDescription}, directoryId = ${selectDirectoryId}, categoryId = ${selectCategoryId}`,
-    )
+    createDeckMutation.mutate({
+      folderId: selectDirectoryId,
+      categoryId: selectCategoryId,
+      name: deckTitle,
+      description: deckDescription,
+      isShared: false,
+    })
   }
 
   return (
@@ -56,13 +72,20 @@ export function DeckCreateFormDialog({
         <form className="grid gap-4 py-2 sm:gap-6 sm:py-4">
           <div className="grid gap-2">
             <Label htmlFor="folder">폴더</Label>
-            <Select onValueChange={setSelectDirectory}>
+            <Select
+              onValueChange={(value) =>
+                setSelectDirectory(Number.parseInt(value))
+              }
+            >
               <SelectTrigger id="folder" className="min-h-[44px]">
-                <SelectValue placeholder={directories[0]?.name} />
+                <SelectValue placeholder="선택" />
               </SelectTrigger>
               <SelectContent>
                 {directories.map((directory) => (
-                  <SelectItem key={directory.id} value={directory.id}>
+                  <SelectItem
+                    key={directory.id}
+                    value={directory.id.toString()}
+                  >
                     {directory.name}
                   </SelectItem>
                 ))}
@@ -71,13 +94,17 @@ export function DeckCreateFormDialog({
           </div>
           <div className="grid gap-2">
             <Label htmlFor="category">카테고리 (Category)</Label>
-            <Select onValueChange={setSelectCategory}>
+            <Select
+              onValueChange={(value) =>
+                setSelectCategory(Number.parseInt(value))
+              }
+            >
               <SelectTrigger id="category" className="min-h-[44px]">
-                <SelectValue placeholder={categories[0]?.name} />
+                <SelectValue placeholder="선택" />
               </SelectTrigger>
               <SelectContent>
                 {categories.map((category) => (
-                  <SelectItem key={category.id} value={category.id}>
+                  <SelectItem key={category.id} value={category.id.toString()}>
                     {category.name}
                   </SelectItem>
                 ))}
