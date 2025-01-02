@@ -4,7 +4,7 @@ import {
 } from "@/src/shadcn/components/ui/sidebar"
 import MSWProvider from "@/src/shared/MswProvider"
 import QueryProvider from "@/src/shared/QueryProvider"
-import AppSidebar from "@/src/template/AppSidebar"
+import AppSidebar from "@/src/template/sidebar/AppSidebar"
 import { Provider } from "jotai"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
