@@ -7,7 +7,8 @@ import {
   SidebarHeader,
 } from "@/src/shadcn/components/ui/sidebar"
 import { getQueryClient } from "@/src/shared/get-query-client"
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query"
+import AppSidebarHeader from "@/src/template/sidebar/AppSidebarHeader"
+import { HydrationBoundary, dehydrate } from "@tanstack/react-query"
 import { cookies } from "next/headers"
 
 export default async function AppSidebar() {
@@ -26,7 +27,9 @@ export default async function AppSidebar() {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Sidebar>
-        <SidebarHeader />
+        <SidebarHeader className="p-0">
+          <AppSidebarHeader />
+        </SidebarHeader>
         <SidebarContent />
         <SidebarFooter>{footerContent}</SidebarFooter>
       </Sidebar>
