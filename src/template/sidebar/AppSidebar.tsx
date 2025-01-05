@@ -23,7 +23,7 @@ export default async function AppSidebar() {
       footerContent = <LoginButton />
     }
   }
-
+  console.log('tset')
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Sidebar>
