@@ -14,6 +14,6 @@ export function getBaseUrl(path: string, method: Method = "GET"): string {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL as string
   if (process.env.NODE_ENV === "test") return mswUrl
   if (process.env.NODE_ENV === "production") return apiUrl
-  if (completedApi[path].includes(method)) return apiUrl
+  if ((completedApi[path] ?? []).includes(method)) return apiUrl
   return mswUrl
 }
