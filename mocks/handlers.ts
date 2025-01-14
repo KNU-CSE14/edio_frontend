@@ -4,7 +4,7 @@ export type Method = "GET" | "POST" | "PUT" | "DELETE" | "HEAD" | "PATCH"
 const GET_ACCOUNT = "/api/account"
 const LOGIN = "/oauth2/authorization/google"
 const GET_CATEGORIES = "/api/category"
-const GET_MY_DIRECTORIES = "/api/my-folders/"
+const GET_MY_DIRECTORIES = "/api/folder/my-folders"
 const DECK = "/api/deck"
 export const completedApi: {
   [key: string]: Method[]
@@ -12,8 +12,8 @@ export const completedApi: {
   [LOGIN]: ["GET"],
   [GET_ACCOUNT]: ["GET"],
   [GET_CATEGORIES]: ["GET"],
-  [GET_MY_DIRECTORIES]: [],
-  [DECK]: ["POST"],
+  [GET_MY_DIRECTORIES]: ["GET"],
+  [DECK]: [],
 }
 const handlers = [
   http.get(`${process.env.NEXT_PUBLIC_MSW_URL}${LOGIN}`, () => {

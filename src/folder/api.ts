@@ -1,7 +1,7 @@
 import { queryOptions } from "@tanstack/react-query"
 import { getFetch } from "@/src/shared/util/data/fetcher"
 
-export const GET_MY_DIRECTORIES = "/api/my-folders/"
+export const GET_MY_DIRECTORIES = "/api/folder/my-folders"
 export type Directory = {
   id: number
   name: string
