@@ -21,7 +21,7 @@ export default function AppSidebarHeader() {
       <section className="flex items-center justify-between p-2 px-5 border-b-2 border-t-2 [&_svg]:size-5">
         <TooltipProvider delayDuration={0}>
           <Tooltip>
-            <TooltipTrigger>
+            <TooltipTrigger asChild>
               <Button variant={"ghost"} size={"icon"}>
                 <SvgSearch />
               </Button>
@@ -29,7 +29,7 @@ export default function AppSidebarHeader() {
             <TooltipContent side="bottom">Search</TooltipContent>
           </Tooltip>
           <Tooltip>
-            <TooltipTrigger>
+            <TooltipTrigger asChild>
               <Button variant={"ghost"} size={"icon"}>
                 <SvgAddDeck />
               </Button>
@@ -37,7 +37,7 @@ export default function AppSidebarHeader() {
             <TooltipContent side="bottom">Add Deck</TooltipContent>
           </Tooltip>
           <Tooltip>
-            <TooltipTrigger>
+            <TooltipTrigger asChild>
               <Button variant={"ghost"} size={"icon"}>
                 <SvgAddFolder />
               </Button>
@@ -45,7 +45,7 @@ export default function AppSidebarHeader() {
             <TooltipContent side="bottom">Add Folder</TooltipContent>
           </Tooltip>
           <Tooltip>
-            <TooltipTrigger>
+            <TooltipTrigger asChild>
               <Button variant={"ghost"} size={"icon"}>
                 <SvgAddChat />
               </Button>
