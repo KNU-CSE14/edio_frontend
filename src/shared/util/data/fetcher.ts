@@ -1,7 +1,6 @@
-"use server"
 import { getBaseUrl, NetworkError } from "@/src/shared/util/data/common"
+import { serverHeaders } from "@/src/shared/util/data/server-option"
 import { isServer } from "@tanstack/react-query"
-import { headers } from "next/headers"
 import { stringify } from "qs"
 
 const defaultHeaders: HeadersInit = {
@@ -24,10 +23,9 @@ export async function getFetch(
   return fetch(`${getBaseUrl(path)}${path}${queryString}`, {
     credentials: "include",
     ...option,
-    headers: {
-      ...(isServer ? Object.fromEntries(headers()) : {}),
-      ...(option?.headers ?? defaultHeaders),
-    },
+    headers: isServer
+      ? await serverHeaders(option?.headers ?? defaultHeaders)
+      : (option?.headers ?? defaultHeaders),
   }).then((res) => {
     if (!res.ok) throw new NetworkError({ code: res.status })
     return res.json()
@@ -49,9 +47,9 @@ export async function postFetch(
     method: "POST",
     credentials: "include",
     ...option,
-    headers: {
-      ...(isServer ? Object.fromEntries(headers()) : {}),
-    },
+    headers: isServer
+      ? await serverHeaders(option?.headers)
+      : (option?.headers ?? {}),
     body: content,
   }).then((res) => {
     if (!res.ok) throw new NetworkError({ code: res.status })
