@@ -8,6 +8,13 @@ export type DeckCreateReq = {
   description?: string
   isShared: boolean
 }
+export type Deck = {
+  id: number
+  name: string
+  description: string
+  isShared: boolean
+  isFavorite: boolean
+}
 
 export const queryKey = [REQ_DECK]
 

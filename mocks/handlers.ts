@@ -1,3 +1,5 @@
+import { Deck } from "@/src/deck/api"
+import { Folder, GET_FOLDERS_ALL } from "@/src/folder/api"
 import { http, HttpResponse } from "msw"
 
 export type Method = "GET" | "POST" | "PUT" | "DELETE" | "HEAD" | "PATCH"
@@ -80,6 +82,34 @@ const handlers = [
   }),
   http.post(`${process.env.NEXT_PUBLIC_MSW_URL}${DECK}`, () => {
     return HttpResponse.json({})
+  }),
+
+  http.get(`${process.env.NEXT_PUBLIC_MSW_URL}${GET_FOLDERS_ALL}`, () => {
+    let id = 0
+    const createFolder = (depth = 0): Folder | null => {
+      depth++
+      if (depth > 5) return null
+      const sub = new Array(5)
+        .fill(0)
+        .map(() => createFolder(depth + 1))
+        .filter((v) => v != null)
+      return {
+        id: id++,
+        name: `folder name ${id}`,
+        subFolders: sub,
+        decks: new Array(5).fill(0).map(createDeck),
+      }
+    }
+    const createDeck = (): Deck => {
+      return {
+        id: id++,
+        name: `deck name ${id}`,
+        description: "sample",
+        isShared: false,
+        isFavorite: false,
+      }
+    }
+    return HttpResponse.json(createFolder())
   }),
 ]
 
