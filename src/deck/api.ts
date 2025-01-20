@@ -20,6 +20,9 @@ export const queryKey = [REQ_DECK]
 
 export function createNewDeck(createRequest: DeckCreateReq): Promise<void> {
   const formData = new FormData()
-  formData.append("deck", JSON.stringify(createRequest))
+  const jsonBlob = new Blob([JSON.stringify(createRequest)], {
+    type: "application/json",
+  })
+  formData.append("request", jsonBlob)
   return postFetch(REQ_DECK, formData)
 }

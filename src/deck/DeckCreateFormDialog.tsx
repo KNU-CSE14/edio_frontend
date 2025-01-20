@@ -20,8 +20,9 @@ import { Label } from "@/src/shadcn/components/ui/label"
 import { useState } from "react"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { getCategories } from "@/src/category/api"
-import { getMyDirectories } from "@/src/folder/api"
+import { getFoldersAllKey, getMyDirectories } from "@/src/folder/api"
 import { createNewDeck, queryKey } from "@/src/deck/api"
+import { getQueryClient } from "@/src/shared/get-query-client"
 
 export function DeckCreateFormDialog({
   open,
@@ -44,6 +45,7 @@ export function DeckCreateFormDialog({
     onSuccess: (variables) => {
       console.log(`New deck create Success, var = ${JSON.stringify(variables)}`)
       window.alert("[Test] Created!")
+      getQueryClient().invalidateQueries({ queryKey: getFoldersAllKey })
       onOpenChangeFn(false)
     },
     onError: (error) => {

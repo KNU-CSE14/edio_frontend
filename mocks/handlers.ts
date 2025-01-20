@@ -15,7 +15,7 @@ export const completedApi: {
   [GET_ACCOUNT]: ["GET"],
   [GET_CATEGORIES]: ["GET"],
   [GET_MY_DIRECTORIES]: ["GET"],
-  [DECK]: [],
+  [DECK]: ["POST"],
   [GET_FOLDERS_ALL]: ["GET"],
 }
 const handlers = [
