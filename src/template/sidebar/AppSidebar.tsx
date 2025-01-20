@@ -1,12 +1,13 @@
 import { getAccount } from "@/src/account/api"
 import LoginButton from "@/src/account/auth/LoginButton"
+import { getAllFolders } from "@/src/folder/api"
 import {
   Sidebar,
-  SidebarContent,
   SidebarFooter,
   SidebarHeader,
 } from "@/src/shadcn/components/ui/sidebar"
 import { getQueryClient } from "@/src/shared/get-query-client"
+import AppSidebarContent from "@/src/template/sidebar/AppSidebarContent"
 import AppSidebarHeader from "@/src/template/sidebar/AppSidebarHeader"
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query"
 import { cookies } from "next/headers"
@@ -18,6 +19,7 @@ export default async function AppSidebar() {
   if (cookies().get("accessToken")) {
     try {
       await queryClient.fetchQuery(getAccount())
+      queryClient.prefetchQuery(getAllFolders())
       footerContent = <div>TODO: user profile component</div>
     } catch (err) {
       footerContent = <LoginButton />
@@ -30,7 +32,7 @@ export default async function AppSidebar() {
         <SidebarHeader className="p-0">
           <AppSidebarHeader />
         </SidebarHeader>
-        <SidebarContent />
+        <AppSidebarContent />
         <SidebarFooter>{footerContent}</SidebarFooter>
       </Sidebar>
     </HydrationBoundary>

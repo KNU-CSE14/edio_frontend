@@ -16,6 +16,7 @@ export const completedApi: {
   [GET_CATEGORIES]: ["GET"],
   [GET_MY_DIRECTORIES]: ["GET"],
   [DECK]: [],
+  [GET_FOLDERS_ALL]: ["GET"],
 }
 const handlers = [
   http.get(`${process.env.NEXT_PUBLIC_MSW_URL}${LOGIN}`, () => {
