@@ -14,5 +14,9 @@ const config: StorybookConfig = {
     options: {},
   },
   staticDirs: ["..\\public"],
+  env: (config) => ({
+    ...config,
+    NEXT_PUBLIC_API_URL: "http://localhost:3030",
+  }),
 }
 export default config
