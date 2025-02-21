@@ -18,5 +18,8 @@ const config: StorybookConfig = {
     ...config,
     NEXT_PUBLIC_API_URL: "http://localhost:3030",
   }),
+  features: {
+    experimentalRSC: true,
+  },
 }
 export default config
