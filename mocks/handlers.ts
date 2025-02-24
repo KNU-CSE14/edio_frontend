@@ -1,3 +1,4 @@
+import { POST_CARDS } from "@/src/card/api"
 import { Deck } from "@/src/deck/api"
 import { Folder, GET_FOLDERS_ALL } from "@/src/folder/api"
 import { http, HttpResponse } from "msw"
@@ -8,6 +9,7 @@ const LOGIN = "/oauth2/authorization/google"
 const GET_CATEGORIES = "/api/category"
 const GET_MY_DIRECTORIES = "/api/folder/my-folders"
 const DECK = "/api/deck"
+
 export const completedApi: {
   [key: string]: Method[]
 } = {
@@ -15,9 +17,11 @@ export const completedApi: {
   [GET_ACCOUNT]: ["GET"],
   [GET_CATEGORIES]: ["GET"],
   [GET_MY_DIRECTORIES]: ["GET"],
-  [DECK]: ["POST"],
+  [DECK]: ["POST", "GET"],
   [GET_FOLDERS_ALL]: ["GET"],
+  [POST_CARDS]: ["POST"],
 }
+
 const handlers = [
   http.get(`${process.env.NEXT_PUBLIC_MSW_URL}${LOGIN}`, () => {
     return new HttpResponse(null, {
@@ -50,6 +54,7 @@ const handlers = [
       })
     },
   ),
+
   http.get(`${process.env.NEXT_PUBLIC_MSW_URL}${GET_CATEGORIES}`, () => {
     return HttpResponse.json([
       {
@@ -111,6 +116,28 @@ const handlers = [
       }
     }
     return HttpResponse.json(createFolder())
+  }),
+  http.get(`${process.env.NEXT_PUBLIC_MSW_URL}${DECK}`, ({ request }) => {
+    const id = new URL(request.url).searchParams.get("deck")
+    if (id) return new HttpResponse(null, { status: 404 })
+    let generateCard = (id = 0) => ({
+      id: id,
+      name: "front" + id,
+      description: "back" + id,
+      deckId: 1,
+      attachments: [],
+    })
+    return HttpResponse.json({
+      id: 1,
+      name: "deck name",
+      description: "sample",
+      isShared: false,
+      isFavorite: false,
+      cards: new Array(10).fill(0).map((_, i) => generateCard(i)),
+    })
+  }),
+  http.post(`${process.env.NEXT_PUBLIC_MSW_URL}${POST_CARDS}`, async ({}) => {
+    return new HttpResponse(null, { status: 200 })
   }),
 ]
 

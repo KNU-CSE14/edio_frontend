@@ -9,6 +9,7 @@ import { Provider } from "jotai"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
+import { Toaster } from "@/src/shadcn/components/ui/toaster"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -32,6 +33,7 @@ export default function RootLayout({
                 <AppSidebar />
                 <SidebarTrigger />
                 {children}
+                <Toaster />
               </SidebarProvider>
             </Provider>
           </QueryProvider>

@@ -23,6 +23,9 @@ import { getCategories } from "@/src/category/api"
 import { getFoldersAllKey, getMyDirectories } from "@/src/folder/api"
 import { createNewDeck, queryKey } from "@/src/deck/api"
 import { getQueryClient } from "@/src/shared/get-query-client"
+import { ToastAction } from "@/src/shadcn/components/ui/toast"
+import { toast } from "@/src/shadcn/hooks/use-toast"
+import Link from "next/link"
 
 export function DeckCreateFormDialog({
   open,
@@ -47,6 +50,14 @@ export function DeckCreateFormDialog({
       window.alert("[Test] Created!")
       getQueryClient().invalidateQueries({ queryKey: getFoldersAllKey })
       onOpenChangeFn(false)
+      toast({
+        title: `${deckTitle} Deck created!`,
+        action: (
+          <ToastAction altText="Try again" asChild>
+            <Link href={`/deck/${variables.id}/edit`}>Add card</Link>
+          </ToastAction>
+        ),
+      })
     },
     onError: (error) => {
       console.log(`Failed create deck, cause = ${error}`)
