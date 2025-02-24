@@ -28,7 +28,9 @@ export async function getFetch(
       : (option?.headers ?? defaultHeaders),
   }).then((res) => {
     if (!res.ok) throw new NetworkError({ code: res.status })
-    return res.json()
+    return res.headers.get("Content-Type") === "application/json"
+      ? res.json()
+      : res
   })
 }
 
@@ -40,7 +42,7 @@ export async function getFetch(
  */
 export async function postFetch(
   path: string,
-  content?: FormData,
+  content?: BodyInit,
   option?: RequestInit,
 ) {
   return fetch(`${getBaseUrl(path, "POST")}${path}`, {
@@ -53,6 +55,8 @@ export async function postFetch(
     body: content,
   }).then((res) => {
     if (!res.ok) throw new NetworkError({ code: res.status })
-    return res.json()
+    return res.headers.get("Content-Type") === "application/json"
+      ? res.json()
+      : res
   })
 }
