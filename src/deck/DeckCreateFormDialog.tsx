@@ -47,7 +47,6 @@ export function DeckCreateFormDialog({
     mutationFn: createNewDeck,
     onSuccess: (variables) => {
       console.log(`New deck create Success, var = ${JSON.stringify(variables)}`)
-      window.alert("[Test] Created!")
       getQueryClient().invalidateQueries({ queryKey: getFoldersAllKey })
       onOpenChangeFn(false)
       toast({
