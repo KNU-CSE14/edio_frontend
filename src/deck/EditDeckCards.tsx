@@ -18,6 +18,7 @@ import { ImageUp, Mic, X } from "lucide-react"
 import { Textarea } from "@/src/shadcn/components/ui/textarea"
 import { POST_CARDS, updateCards } from "@/src/card/api"
 import { useRef } from "react"
+import { ScrollArea } from "@/src/shadcn/components/ui/scroll-area"
 
 const createDummyFile = (attachment?: Attachment) => {
   const file = new File([], attachment?.fileName ?? "", {
@@ -147,189 +148,191 @@ export default function DeckEdit() {
         className="w-full flex flex-col flex-grow overflow-auto"
       >
         <div className="flex flex-1 overflow-auto">
-          <ul className="flex flex-col w-full overflow-auto border-r min-h-0 border-gray-200 justify-items-center p-2">
-            {fields.map((card, index) => {
-              const isDeleted = card.status === "DELETE"
-              return (
-                <li key={card.key} className="flex justify-center ">
-                  <Card className="flex flex-col p-2 m-2 gap-2 max-w-md w-full flex-shrink-0">
-                    <div className="flex flex-col gap-2">
-                      <FormField
-                        name={`cards.${index}.name`}
-                        control={form.control}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>name</FormLabel>
-                            <FormControl>
-                              <Input
-                                disabled={isDeleted}
-                                type="text"
-                                placeholder="name"
-                                {...form.register(field.name, {
-                                  required: !isDeleted,
-                                })}
-                                value={field.value ?? card.name}
-                              />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      ></FormField>
-                      <FormField
-                        name={`cards.${index}.description`}
-                        control={form.control}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>description</FormLabel>
-                            <FormControl>
-                              <Textarea
-                                disabled={isDeleted}
-                                rows={5}
-                                placeholder="description"
-                                {...form.register(field.name, {
-                                  required: !isDeleted,
-                                })}
-                                value={field.value ?? card.description}
-                              />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      ></FormField>
-                    </div>
-                    <div className="flex justify-between">
-                      <div className="flex flex-col gap-1 min-w-0">
+          <ScrollArea className="w-full" type="auto">
+            <ul className="flex flex-col w-full overflow-auto border-r min-h-0 border-gray-200 justify-items-center p-2">
+              {fields.map((card, index) => {
+                const isDeleted = card.status === "DELETE"
+                return (
+                  <li key={card.key} className="flex justify-center ">
+                    <Card className="flex flex-col p-2 m-2 gap-2 max-w-md w-full flex-shrink-0">
+                      <div className="flex flex-col gap-2">
                         <FormField
-                          name={`cards.${index}.image`}
-                          render={({ field: { value, onChange, name } }) => (
+                          name={`cards.${index}.name`}
+                          control={form.control}
+                          render={({ field }) => (
                             <FormItem>
-                              <div className="text-ellipsis flex items-center gap-1">
-                                <Button
-                                  disabled={isDeleted}
-                                  type="button"
-                                  variant={"outline"}
-                                  size={"icon"}
-                                  onClick={() => {
-                                    getFileInputNode().get(name)?.click()
-                                  }}
-                                >
-                                  <ImageUp />
-                                </Button>
-                                <FormLabel className="truncate cursor-pointer flex-1 leading-normal">
-                                  {getFileNameFromField(value ?? card.image)}
-                                </FormLabel>
-                                <Button
-                                  className={
-                                    getFileNameFromField(value ?? card.image)
-                                      ?.length
-                                      ? undefined
-                                      : "hidden"
-                                  }
-                                  disabled={isDeleted}
-                                  type="reset"
-                                  variant={"ghost"}
-                                  size={"icon"}
-                                  onClick={() => {
-                                    onChange(createDummyFile())
-                                  }}
-                                >
-                                  <X />
-                                </Button>
-                              </div>
+                              <FormLabel>name</FormLabel>
                               <FormControl>
                                 <Input
                                   disabled={isDeleted}
-                                  type="file"
-                                  className="hidden"
-                                  accept="image/*"
-                                  {...form.register(name)}
-                                  ref={setFileInputNode(name)}
-                                  onChange={(e) => {
-                                    onChange(e.target.files?.[0])
-                                  }}
+                                  type="text"
+                                  placeholder="name"
+                                  {...form.register(field.name, {
+                                    required: !isDeleted,
+                                  })}
+                                  value={field.value ?? card.name}
                                 />
                               </FormControl>
                             </FormItem>
                           )}
                         ></FormField>
                         <FormField
-                          name={`cards.${index}.audio`}
-                          render={({ field: { onChange, value, name } }) => (
+                          name={`cards.${index}.description`}
+                          control={form.control}
+                          render={({ field }) => (
                             <FormItem>
-                              <div className="text-ellipsis flex items-center gap-1">
-                                <Button
+                              <FormLabel>description</FormLabel>
+                              <FormControl>
+                                <Textarea
                                   disabled={isDeleted}
-                                  type="button"
-                                  variant={"outline"}
-                                  size={"icon"}
-                                  onClick={() => {
-                                    getFileInputNode().get(name)?.click()
-                                  }}
-                                >
-                                  <Mic />
-                                </Button>
-                                <FormLabel className="truncate flex-1 cursor-pointer leading-normal">
-                                  {getFileNameFromField(value ?? card.audio)}
-                                </FormLabel>
-                                <Button
-                                  className={
-                                    getFileNameFromField(value ?? card.audio)
-                                      ?.length
-                                      ? undefined
-                                      : "hidden"
-                                  }
-                                  disabled={isDeleted}
-                                  type="reset"
-                                  variant={"ghost"}
-                                  size={"icon"}
-                                  onClick={() => {
-                                    onChange(createDummyFile())
-                                  }}
-                                >
-                                  <X />
-                                </Button>
+                                  rows={5}
+                                  placeholder="description"
+                                  {...form.register(field.name, {
+                                    required: !isDeleted,
+                                  })}
+                                  value={field.value ?? card.description}
+                                />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        ></FormField>
+                      </div>
+                      <div className="flex justify-between">
+                        <div className="flex flex-col gap-1 min-w-0">
+                          <FormField
+                            name={`cards.${index}.image`}
+                            render={({ field: { value, onChange, name } }) => (
+                              <FormItem>
+                                <div className="text-ellipsis flex items-center gap-1">
+                                  <Button
+                                    disabled={isDeleted}
+                                    type="button"
+                                    variant={"outline"}
+                                    size={"icon"}
+                                    onClick={() => {
+                                      getFileInputNode().get(name)?.click()
+                                    }}
+                                  >
+                                    <ImageUp />
+                                  </Button>
+                                  <FormLabel className="truncate cursor-pointer flex-1 leading-normal">
+                                    {getFileNameFromField(value ?? card.image)}
+                                  </FormLabel>
+                                  <Button
+                                    className={
+                                      getFileNameFromField(value ?? card.image)
+                                        ?.length
+                                        ? undefined
+                                        : "hidden"
+                                    }
+                                    disabled={isDeleted}
+                                    type="reset"
+                                    variant={"ghost"}
+                                    size={"icon"}
+                                    onClick={() => {
+                                      onChange(createDummyFile())
+                                    }}
+                                  >
+                                    <X />
+                                  </Button>
+                                </div>
                                 <FormControl>
                                   <Input
                                     disabled={isDeleted}
                                     type="file"
                                     className="hidden"
-                                    accept="audio/*"
+                                    accept="image/*"
                                     {...form.register(name)}
                                     ref={setFileInputNode(name)}
-                                    onChange={(e) =>
-                                      e.target.files &&
-                                      onChange(e.target.files[0])
-                                    }
+                                    onChange={(e) => {
+                                      onChange(e.target.files?.[0])
+                                    }}
                                   />
                                 </FormControl>
-                              </div>
-                            </FormItem>
-                          )}
-                        ></FormField>
+                              </FormItem>
+                            )}
+                          ></FormField>
+                          <FormField
+                            name={`cards.${index}.audio`}
+                            render={({ field: { onChange, value, name } }) => (
+                              <FormItem>
+                                <div className="text-ellipsis flex items-center gap-1">
+                                  <Button
+                                    disabled={isDeleted}
+                                    type="button"
+                                    variant={"outline"}
+                                    size={"icon"}
+                                    onClick={() => {
+                                      getFileInputNode().get(name)?.click()
+                                    }}
+                                  >
+                                    <Mic />
+                                  </Button>
+                                  <FormLabel className="truncate flex-1 cursor-pointer leading-normal">
+                                    {getFileNameFromField(value ?? card.audio)}
+                                  </FormLabel>
+                                  <Button
+                                    className={
+                                      getFileNameFromField(value ?? card.audio)
+                                        ?.length
+                                        ? undefined
+                                        : "hidden"
+                                    }
+                                    disabled={isDeleted}
+                                    type="reset"
+                                    variant={"ghost"}
+                                    size={"icon"}
+                                    onClick={() => {
+                                      onChange(createDummyFile())
+                                    }}
+                                  >
+                                    <X />
+                                  </Button>
+                                  <FormControl>
+                                    <Input
+                                      disabled={isDeleted}
+                                      type="file"
+                                      className="hidden"
+                                      accept="audio/*"
+                                      {...form.register(name)}
+                                      ref={setFileInputNode(name)}
+                                      onChange={(e) =>
+                                        e.target.files &&
+                                        onChange(e.target.files[0])
+                                      }
+                                    />
+                                  </FormControl>
+                                </div>
+                              </FormItem>
+                            )}
+                          ></FormField>
+                        </div>
+                        {isDeleted ? (
+                          <Button
+                            type="button"
+                            onClick={handleUndo(index)}
+                            variant={"secondary"}
+                            size={"sm"}
+                          >
+                            undo
+                          </Button>
+                        ) : (
+                          <Button
+                            type="button"
+                            onClick={handleRemove(index)}
+                            variant={"destructive"}
+                            size={"sm"}
+                          >
+                            remove
+                          </Button>
+                        )}
                       </div>
-                      {isDeleted ? (
-                        <Button
-                          type="button"
-                          onClick={handleUndo(index)}
-                          variant={"secondary"}
-                          size={"sm"}
-                        >
-                          undo
-                        </Button>
-                      ) : (
-                        <Button
-                          type="button"
-                          onClick={handleRemove(index)}
-                          variant={"destructive"}
-                          size={"sm"}
-                        >
-                          remove
-                        </Button>
-                      )}
-                    </div>
-                  </Card>
-                </li>
-              )
-            })}
-          </ul>
+                    </Card>
+                  </li>
+                )
+              })}
+            </ul>
+          </ScrollArea>
           <div className="flex w-full max-h-fit">preview TODO</div>
         </div>
         <div className="flex justify-around p-3 border-t">

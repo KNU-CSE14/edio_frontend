@@ -7,6 +7,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/src/shadcn/components/ui/collapsible"
+import { ScrollArea } from "@/src/shadcn/components/ui/scroll-area"
 import {
   SidebarContent,
   SidebarMenu,
@@ -84,12 +85,14 @@ export default function AppSidebarContent() {
 
   return (
     <SidebarContent>
-      <SidebarMenu>
-        <SidebarMenuItem className="max-w-full px-1">
-          {folders?.map(generateFolderMenu)}
-          {decks?.map(generateDeckMenu)}
-        </SidebarMenuItem>
-      </SidebarMenu>
+      <ScrollArea type="auto">
+        <SidebarMenu>
+          <SidebarMenuItem className="max-w-full px-1">
+            {folders?.map(generateFolderMenu)}
+            {decks?.map(generateDeckMenu)}
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </ScrollArea>
     </SidebarContent>
   )
 }
