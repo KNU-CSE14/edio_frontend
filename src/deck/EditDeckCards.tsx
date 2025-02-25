@@ -144,7 +144,7 @@ export default function DeckEdit() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="w-full flex flex-col h-svh"
+        className="w-full flex flex-col flex-grow overflow-auto"
       >
         <div className="flex flex-1 overflow-auto">
           <ul className="flex flex-col w-full overflow-auto border-r min-h-0 border-gray-200 justify-items-center p-2">
@@ -152,7 +152,7 @@ export default function DeckEdit() {
               const isDeleted = card.status === "DELETE"
               return (
                 <li key={card.key} className="flex justify-center ">
-                  <Card className="flex flex-col p-2 m-2 gap-2 max-w-md w-full">
+                  <Card className="flex flex-col p-2 m-2 gap-2 max-w-md w-full flex-shrink-0">
                     <div className="flex flex-col gap-2">
                       <FormField
                         name={`cards.${index}.name`}
@@ -332,8 +332,8 @@ export default function DeckEdit() {
           </ul>
           <div className="flex w-full max-h-fit">preview TODO</div>
         </div>
-        <div className="flex justify-around p-3">
-          <Button onClick={handleAddCard} variant={"secondary"}>
+        <div className="flex justify-around p-3 border-t">
+          <Button onClick={handleAddCard} variant={"outline"}>
             Add card
           </Button>
           <Button type="submit">Submit</Button>
