@@ -148,13 +148,17 @@ export default function DeckEdit() {
         className="w-full flex flex-col flex-grow overflow-auto"
       >
         <div className="flex flex-1 overflow-auto">
-          <ScrollArea className="w-full" type="auto">
-            <ul className="flex flex-col w-full overflow-auto border-r min-h-0 border-gray-200 justify-items-center p-2">
+          {/* scrollArea 내부적으로 사용하는 display table로 인해 text-overflow가 정상 동작 하지 않아 수정. */}
+          <ScrollArea
+            className="w-full min-w-0 [&>[data-radix-scroll-area-viewport]>div]:!block"
+            type="auto"
+          >
+            <ul className="flex flex-col w-full overflow-auto border-r border-gray-200 justify-items-center p-2">
               {fields.map((card, index) => {
                 const isDeleted = card.status === "DELETE"
                 return (
                   <li key={card.key} className="flex justify-center ">
-                    <Card className="flex flex-col p-2 m-2 gap-2 max-w-md w-full flex-shrink-0">
+                    <Card className="flex flex-col p-2 m-2 gap-2 max-w-md w-full flex-shrink-0 ">
                       <div className="flex flex-col gap-2">
                         <FormField
                           name={`cards.${index}.name`}
@@ -197,7 +201,7 @@ export default function DeckEdit() {
                           )}
                         ></FormField>
                       </div>
-                      <div className="flex justify-between">
+                      <div className="flex justify-between ">
                         <div className="flex flex-col gap-1 min-w-0">
                           <FormField
                             name={`cards.${index}.image`}
