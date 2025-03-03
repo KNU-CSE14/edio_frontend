@@ -1,4 +1,4 @@
-import { postFetch } from "@/src/shared/util/data/fetcher"
+import { formFetch } from "@/src/shared/util/data/fetcher"
 
 export const POST_CARDS = "/api/cards"
 
@@ -9,5 +9,7 @@ export async function updateCards(data: CardForEditRequest[]): Promise<void> {
       formData.append(`requests[${index}].${key}`, value)
     }
   }
-  return postFetch(POST_CARDS, formData)
+  return formFetch(POST_CARDS, formData, {
+    method: "POST",
+  })
 }

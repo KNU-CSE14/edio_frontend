@@ -1,13 +1,14 @@
-import { getFetch, postFetch } from "@/src/shared/util/data/fetcher"
+import { formFetch, getFetch } from "@/src/shared/util/data/fetcher"
 import { queryOptions } from "@tanstack/react-query"
 
 export const REQ_DECK = "/api/deck"
-export type DeckCreateWithFileReq = {
-  request: DeckCreateReq
+export type DeckEditWithFileReq = {
+  request: DeckEditReq
   file?: File | null
 }
 export const GET_DECK = "/api/deck"
-export type DeckCreateReq = {
+export type DeckEditReq = {
+  id?: number | null
   folderId: number
   categoryId: number
   name: string
@@ -16,6 +17,8 @@ export type DeckCreateReq = {
 }
 export type Deck = {
   id: number
+  folderId: number
+  categoryId: number
   name: string
   description: string
   isShared: boolean
@@ -28,14 +31,27 @@ export type DeckDetail = Deck & {
 export const queryKey = [REQ_DECK]
 
 export function createNewDeck(
-  createRequest: DeckCreateWithFileReq,
+  createRequest: DeckEditWithFileReq,
 ): Promise<Deck> {
   const formData = new FormData()
 
   formData.append("request", JSON.stringify(createRequest.request))
   formData.append("file", createRequest.file!)
 
-  return postFetch(REQ_DECK, formData)
+  return formFetch(REQ_DECK, formData, {
+    method: "POST",
+  })
+}
+
+export function updateDeck(updateRequest: DeckEditWithFileReq): Promise<void> {
+  const formData = new FormData()
+
+  formData.append("request", JSON.stringify(updateRequest.request))
+  formData.append("file", updateRequest.file!)
+
+  return formFetch(REQ_DECK, formData, {
+    method: "PATCH",
+  })
 }
 
 export function getDeckDetail(deckId: number) {

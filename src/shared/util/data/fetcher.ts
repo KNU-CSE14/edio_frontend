@@ -40,7 +40,7 @@ export async function getFetch(
  * @param content request body (form-data)
  * @param option
  */
-export async function postFetch(
+export async function formFetch(
   path: string,
   content?: BodyInit,
   option?: RequestInit,

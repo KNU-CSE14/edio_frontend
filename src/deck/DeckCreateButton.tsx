@@ -1,7 +1,7 @@
 "use client"
 import { Button } from "@/src/shadcn/components/ui/button"
 import { useState } from "react"
-import { DeckCreateFormDialog } from "@/src/deck/DeckCreateFormDialog"
+import { DeckEditFormDialog } from "@/src/deck/DeckEditFormDialog"
 
 export default function DeckCreateButton() {
   const [openDialog, setOpenDialog] = useState(false)
@@ -9,7 +9,7 @@ export default function DeckCreateButton() {
   return (
     <>
       <Button onClick={() => setOpenDialog(true)}>덱 생성</Button>
-      <DeckCreateFormDialog open={openDialog} onOpenChangeFn={setOpenDialog} />
+      <DeckEditFormDialog open={openDialog} onOpenChangeFn={setOpenDialog} />
     </>
   )
 }
