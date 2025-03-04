@@ -1,4 +1,4 @@
-import { POST_CARDS } from "@/src/card/api"
+import { CARDS } from "@/src/card/api"
 import { Deck } from "@/src/deck/api"
 import { Folder, GET_FOLDERS_ALL } from "@/src/folder/api"
 import { http, HttpResponse } from "msw"
@@ -19,7 +19,7 @@ export const completedApi: {
   [GET_MY_DIRECTORIES]: ["GET"],
   [DECK]: ["POST", "GET"],
   [GET_FOLDERS_ALL]: ["GET"],
-  [POST_CARDS]: ["POST"],
+  [CARDS]: ["POST", "DELETE"],
 }
 
 const handlers = [
@@ -148,7 +148,7 @@ const handlers = [
       cards: new Array(10).fill(0).map((_, i) => generateCard(i)),
     })
   }),
-  http.post(`${process.env.NEXT_PUBLIC_MSW_URL}${POST_CARDS}`, async ({}) => {
+  http.post(`${process.env.NEXT_PUBLIC_MSW_URL}${CARDS}`, async ({}) => {
     return new HttpResponse(null, { status: 200 })
   }),
   http.patch(`${process.env.NEXT_PUBLIC_MSW_URL}${DECK}`, () => {

@@ -1,10 +1,17 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import Page from "@/app/deck/[id]/edit/page"
-import { act, fireEvent, render, screen, waitFor } from "@testing-library/react"
+import {
+  act,
+  findByRole,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react"
 import { useParams } from "next/navigation"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { http, HttpResponse } from "msw"
-import { POST_CARDS } from "@/src/card/api"
+import { DefaultBodyType, http, HttpResponse } from "msw"
+import { CARDS } from "@/src/card/api"
 import { server } from "@/mocks/server"
 vi.mock("next/navigation", () => ({
   useParams: vi.fn(),
@@ -57,7 +64,7 @@ describe("덱 카드 편집 화면", () => {
   it("카드 수정 시 수정된 필드와 필수 값만 전달된다.", async () => {
     let result: object | undefined = undefined
     server.use(
-      http.post(`${process.env.MSW_URL}${POST_CARDS}`, async ({ request }) => {
+      http.post(`${process.env.MSW_URL}${CARDS}`, async ({ request }) => {
         const body = await request.formData()
         result = [...body.entries()].reduce(
           (acc: { [key: string]: any }, [key, value]) => {
@@ -83,7 +90,26 @@ describe("덱 카드 편집 화면", () => {
       })
     })
   })
+  it("삭제된 카드는 id만 전달한다.", async () => {
+    let result: DefaultBodyType | undefined = undefined
+
+    const resultCards = await screen.findAllByRole("listitem")
+    const willBeRemoved = resultCards.pop()
+    const removeButton = await findByRole(willBeRemoved!, "button", {
+      name: "remove",
+    })
+    server.use(
+      http.delete(`${process.env.MSW_URL}${CARDS}`, async ({ request }) => {
+        const body = await request.json()
+        result = body
+        return new HttpResponse(null, { status: 200 })
+      }),
+    )
+
+    fireEvent.click(removeButton)
+    fireEvent.click(screen.getByRole("button", { name: "Submit" }))
+    await waitFor(() => {
+      expect(result).toEqual({ deckId: "1", cardIds: ["9"] })
+    })
+  })
 })
-// it("제출 시 삭제된 카드는 delete api 호출", () => {
-//   // TODO: api
-// })

@@ -16,9 +16,10 @@ import { useParams } from "next/navigation"
 import { Card } from "@/src/shadcn/components/ui/card"
 import { ImageUp, Mic, X } from "lucide-react"
 import { Textarea } from "@/src/shadcn/components/ui/textarea"
-import { POST_CARDS, updateCards } from "@/src/card/api"
+import { mutateCards } from "@/src/card/api"
 import { useRef } from "react"
 import { ScrollArea } from "@/src/shadcn/components/ui/scroll-area"
+import { toast } from "@/src/shadcn/hooks/use-toast"
 
 const createDummyFile = (attachment?: Attachment) => {
   const file = new File([], attachment?.fileName ?? "", {
@@ -73,36 +74,40 @@ export default function DeckEdit() {
     name: "cards",
     keyName: "key",
   })
-  const postDeckMutation = useMutation({
-    mutationKey: [POST_CARDS],
-    mutationFn: updateCards,
+  const cardMutation = useMutation({
+    mutationFn: mutateCards,
     onSuccess: () => {
       queryClient.invalidateQueries(getDeckDetail(id))
     },
+    onError: () => {
+      toast({
+        title: `Failed update cards`,
+        variant: "destructive",
+      })
+    },
   })
+
   const onSubmit = (data: { cards: CardForForm[] }) => {
     const dirtyCards = form.formState.dirtyFields.cards
     if (!dirtyCards?.length) return
-    const { deleted, edited } = data.cards.reduce(
+    const result = data.cards.reduce(
       (acc, card, i) => {
         if (!dirtyCards[i]) return acc
         const { key, ...dirtyFields } = dirtyCards[i]
-        const isDeleted =
-          card.status === "DELETE" && Number.isInteger(card.cardId)
+        const isDeleted = card.status === "DELETE" && card.cardId !== undefined
         const isEdited =
           Object.values(dirtyFields).some((v) => v) && card.status !== "DELETE"
-        if (isDeleted) acc.deleted.push(card.cardId!)
+        if (isDeleted) acc.deleted.cardIds.push(card.cardId!)
         if (isEdited) acc.edited.push(getUpdatedFields(card, dirtyFields))
         return acc
       },
-      { deleted: [] as string[], edited: [] as CardForEditRequest[] },
+      {
+        deleted: { deckId: id, cardIds: [] as string[] },
+        edited: [] as CardForEditRequest[],
+      },
     )
-    if (deleted.length) {
-      /// TODO: 삭제 api
-    }
-    if (edited.length) {
-      postDeckMutation.mutate(edited)
-    }
+    if (result.edited.length || result.deleted.cardIds.length)
+      cardMutation.mutate(result)
   }
   if (!data) return <div>loading...</div>
   const handleAddCard = () => {
@@ -150,10 +155,10 @@ export default function DeckEdit() {
         <div className="flex flex-1 overflow-auto">
           {/* scrollArea 내부적으로 사용하는 display table로 인해 text-overflow가 정상 동작 하지 않아 수정. */}
           <ScrollArea
-            className="w-full min-w-0 [&>[data-radix-scroll-area-viewport]>div]:!block"
+            className="w-full min-w-0 [&>[data-radix-scroll-area-viewport]>div]:!block border-r border-gray-200"
             type="auto"
           >
-            <ul className="flex flex-col w-full overflow-auto border-r border-gray-200 justify-items-center p-2">
+            <ul className="flex flex-col w-full overflow-auto justify-items-center p-2">
               {fields.map((card, index) => {
                 const isDeleted = card.status === "DELETE"
                 return (
