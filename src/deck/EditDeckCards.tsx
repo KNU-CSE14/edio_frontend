@@ -28,6 +28,12 @@ const createDummyFile = (attachment?: Attachment) => {
   return file
 }
 
+const preventEnterKeySubmission = (e: React.KeyboardEvent<HTMLFormElement>) => {
+  const target = e.target
+  if (e.key === "Enter" && target instanceof HTMLInputElement) {
+    e.preventDefault()
+  }
+}
 const toCardForRequestValue = (value: CardForForm[keyof CardForForm]) => {
   if (typeof value === "number") return value.toString()
   if (typeof value === "string") return value
@@ -150,6 +156,7 @@ export default function DeckEdit() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
+        onKeyDown={preventEnterKeySubmission}
         className="w-full flex flex-col flex-grow overflow-auto"
       >
         <div className="flex flex-1 overflow-auto">
