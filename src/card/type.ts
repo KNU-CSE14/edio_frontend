@@ -15,14 +15,15 @@ type Attachment = {
   fileSize: number
   fileTarget: string
 }
-type CardForForm = Partial<
+type CardForForm = Omit<
   Card & {
-    cardId: string
+    cardId?: string
     image: File | string
     audio: File | string
-    key: string
+    key?: string
     status: Status
-  }
+  },
+  "id"
 >
 
 type Status = "NEW" | "DELETE" | "DEFAULT"

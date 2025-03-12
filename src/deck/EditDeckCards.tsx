@@ -13,13 +13,14 @@ import { useFieldArray, useForm } from "react-hook-form"
 import { getDeckDetail } from "@/src/deck/api"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useParams } from "next/navigation"
-import { Card } from "@/src/shadcn/components/ui/card"
+import { Card, CardHeader, CardTitle } from "@/src/shadcn/components/ui/card"
 import { ImageUp, Mic, X } from "lucide-react"
 import { Textarea } from "@/src/shadcn/components/ui/textarea"
 import { mutateCards } from "@/src/card/api"
-import { useRef } from "react"
+import { FormEvent, useRef, useState } from "react"
 import { ScrollArea } from "@/src/shadcn/components/ui/scroll-area"
 import { toast } from "@/src/shadcn/hooks/use-toast"
+import Image from "next/image"
 
 const createDummyFile = (attachment?: Attachment) => {
   const file = new File([], attachment?.fileName ?? "", {
@@ -58,12 +59,12 @@ const getUpdatedFields = (
     return acc
   }, {})
 }
-
 export default function DeckEdit() {
   const { id } = useParams<{ id: string }>() as unknown as { id: number }
   const queryClient = useQueryClient()
   const { data } = useQuery(getDeckDetail(id))
   const fileInputs = useRef<Map<string, HTMLElement> | null>(null)
+  const [lastTouchedCard, setTouchedCard] = useState<CardForForm>()
   const cards: CardForForm[] =
     data?.cards.map(({ attachments, id, ...card }) => ({
       ...card,
@@ -73,6 +74,7 @@ export default function DeckEdit() {
       audio:
         attachments.find((v) => v.fileType.startsWith("audio"))?.fileName ?? "",
       status: "DEFAULT",
+      attachments: attachments,
     })) ?? []
   const form = useForm({ values: { cards } })
   const { fields, update, append } = useFieldArray({
@@ -92,7 +94,6 @@ export default function DeckEdit() {
       })
     },
   })
-
   const onSubmit = (data: { cards: CardForForm[] }) => {
     const dirtyCards = form.formState.dirtyFields.cards
     if (!dirtyCards?.length) return
@@ -124,6 +125,7 @@ export default function DeckEdit() {
       status: "NEW",
       image: createDummyFile(),
       audio: createDummyFile(),
+      attachments: [],
     })
   }
   const handleRemove = (index: number) => () => {
@@ -141,6 +143,17 @@ export default function DeckEdit() {
     }
     update(index, { ...fields[index], status: "DEFAULT" })
   }
+  const handleLastTouchedCard = (event: FormEvent) => {
+    if (event.target instanceof HTMLElement) {
+      const element = event.target.closest("div[data-index]")
+      if (element instanceof HTMLElement) {
+        setTouchedCard(
+          form.getValues().cards[element.dataset.index as unknown as number],
+        )
+        form.trigger()
+      }
+    }
+  }
   const setFileInputNode = (key: string) => (node: HTMLInputElement | null) => {
     const map = getFileInputNode()
     map.set(key, node!)
@@ -155,22 +168,28 @@ export default function DeckEdit() {
   return (
     <Form {...form}>
       <form
+        onChange={handleLastTouchedCard}
+        onFocus={handleLastTouchedCard}
+        onClick={handleLastTouchedCard}
         onSubmit={form.handleSubmit(onSubmit)}
         onKeyDown={preventEnterKeySubmission}
         className="w-full flex flex-col flex-grow overflow-auto"
       >
-        <div className="flex flex-1 overflow-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 flex-1 overflow-auto">
           {/* scrollArea 내부적으로 사용하는 display table로 인해 text-overflow가 정상 동작 하지 않아 수정. */}
           <ScrollArea
             className="w-full min-w-0 [&>[data-radix-scroll-area-viewport]>div]:!block border-r border-gray-200"
             type="auto"
           >
-            <ul className="flex flex-col w-full overflow-auto justify-items-center p-2">
+            <ul className="flex flex-col w-full overflow-auto justify-items-center p-3">
               {fields.map((card, index) => {
                 const isDeleted = card.status === "DELETE"
                 return (
                   <li key={card.key} className="flex justify-center ">
-                    <Card className="flex flex-col p-2 m-2 gap-2 max-w-md w-full flex-shrink-0 ">
+                    <Card
+                      className="flex flex-col p-2 m-2 gap-2 max-w-md w-full flex-shrink-0"
+                      data-index={index}
+                    >
                       <div className="flex flex-col gap-2">
                         <FormField
                           name={`cards.${index}.name`}
@@ -221,6 +240,7 @@ export default function DeckEdit() {
                               <FormItem>
                                 <div className="text-ellipsis flex items-center gap-1">
                                   <Button
+                                    aria-label="upload-image"
                                     disabled={isDeleted}
                                     type="button"
                                     variant={"outline"}
@@ -235,6 +255,7 @@ export default function DeckEdit() {
                                     {getFileNameFromField(value ?? card.image)}
                                   </FormLabel>
                                   <Button
+                                    aria-label="remove-image"
                                     className={
                                       getFileNameFromField(value ?? card.image)
                                         ?.length
@@ -274,6 +295,7 @@ export default function DeckEdit() {
                               <FormItem>
                                 <div className="text-ellipsis flex items-center gap-1">
                                   <Button
+                                    aria-label="upload-audio"
                                     disabled={isDeleted}
                                     type="button"
                                     variant={"outline"}
@@ -288,6 +310,7 @@ export default function DeckEdit() {
                                     {getFileNameFromField(value ?? card.audio)}
                                   </FormLabel>
                                   <Button
+                                    aria-label="remove-audio"
                                     className={
                                       getFileNameFromField(value ?? card.audio)
                                         ?.length
@@ -349,15 +372,74 @@ export default function DeckEdit() {
               })}
             </ul>
           </ScrollArea>
-          <div className="flex w-full max-h-fit">preview TODO</div>
+          <div className="hidden md:flex w-full truncate items-center justify-center px-2">
+            <CardPreview props={lastTouchedCard ?? cards[0]} />
+          </div>
         </div>
         <div className="flex justify-around p-3 border-t">
-          <Button onClick={handleAddCard} variant={"outline"}>
+          <Button type="button" onClick={handleAddCard} variant={"outline"}>
             Add card
           </Button>
           <Button type="submit">Submit</Button>
         </div>
       </form>
     </Form>
+  )
+}
+
+const getFileSrc = (
+  type: "audio" | "image",
+  attachments: Attachment[],
+  file?: File | string,
+) => {
+  if (file instanceof File && file.size) return URL.createObjectURL(file)
+  // already uploaded file
+  if (typeof file === "string") {
+    return attachments.find((v) => v.fileType.startsWith(type))?.filePath ?? ""
+  }
+  return ""
+}
+function CardPreview({ props }: { props?: CardForForm }) {
+  if (!props) return <div></div>
+  const imageSrc = getFileSrc("image", props.attachments, props.image)
+  const audioSrc = getFileSrc("audio", props.attachments, props.audio)
+  const hasImage = !!props.image && !!imageSrc.length
+  const hasAudio = !!props.audio && !!audioSrc.length
+  return (
+    <Card
+      className="
+      w-full
+      break-words whitespace-normal 
+      overflow-hidden
+      max-w-md flex flex-col h-[30rem]"
+    >
+      <div className="basis-1/2 object-contain w-full">
+        {hasImage ? (
+          <Image
+            src={imageSrc}
+            alt="card image"
+            width={0}
+            height={0}
+            className="h-[15rem] object-contain w-full"
+          ></Image>
+        ) : (
+          <div className="w-full h-full text-center content-center bg-slate-100 text-gray-700">
+            No Image
+          </div>
+        )}
+      </div>
+
+      <CardHeader className="basis-1/2 m-0 overflow-auto border-t h-full">
+        <CardTitle className="text-lg">{props.name}</CardTitle>
+        <ScrollArea type="auto" className="h-full">
+          <div className="overflow-auto whitespace-break-spaces break-all">
+            {props.description}
+          </div>
+        </ScrollArea>
+        {hasAudio && (
+          <audio className="self-center" controls src={audioSrc}></audio>
+        )}
+      </CardHeader>
+    </Card>
   )
 }
