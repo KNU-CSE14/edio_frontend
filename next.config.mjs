@@ -24,6 +24,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "lh3.googleusercontent.com",
       },
+      {
+        protocol: "https",
+        hostname: "edio-file-bucket.s3.ap-northeast-2.amazonaws.com",
+      },
     ],
   },
 }
