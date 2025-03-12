@@ -35,6 +35,6 @@ export async function mutateCards({
 }): Promise<void> {
   await Promise.all([
     edited.length ? updateCards(edited) : Promise.resolve(),
-    deleted.cardIds ? deleteCards(deleted) : Promise.resolve(),
+    deleted.cardIds.length ? deleteCards(deleted) : Promise.resolve(),
   ])
 }
