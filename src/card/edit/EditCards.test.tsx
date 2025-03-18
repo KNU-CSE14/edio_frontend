@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import Page from "@/app/deck/[id]/edit/page"
+import Page from "@/app/cards/[id]/edit/page"
 import {
   act,
   findByRole,

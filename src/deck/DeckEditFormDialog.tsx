@@ -6,6 +6,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/src/shadcn/components/ui/dialog"
 import {
   Select,
@@ -27,7 +28,6 @@ import { getQueryClient } from "@/src/shared/get-query-client"
 import { toast } from "@/src/shadcn/hooks/use-toast"
 import { ToastAction } from "@/src/shadcn/components/ui/toast"
 import Link from "next/link"
-import { DialogTrigger } from "@radix-ui/react-dialog"
 
 export function DeckEditFormDialog({ deck, children }: DeckEditFormDialog) {
   const [open, setOpen] = useState(false)
