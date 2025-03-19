@@ -7,10 +7,17 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/src/shadcn/components/ui/collapsible"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/src/shadcn/components/ui/dropdown-menu"
 import { ScrollArea } from "@/src/shadcn/components/ui/scroll-area"
 import {
   SidebarContent,
   SidebarMenu,
+  SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSub,
@@ -18,7 +25,7 @@ import {
 import SvgDeck from "@/src/shared/icons/SvgDeck"
 import SvgFolder from "@/src/shared/icons/SvgFolder"
 import { useQuery } from "@tanstack/react-query"
-import { ChevronRight } from "lucide-react"
+import { ChevronRight, MoreHorizontal } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
 
@@ -71,16 +78,32 @@ export default function AppSidebarContent() {
   }
 
   const generateDeckMenu = (deck: Deck) => (
-    <SidebarMenuButton
-      asChild
-      className="truncate w-full "
-      key={`deck-${deck.id}`}
-    >
-      <Link href={`/deck/${deck.id}/study`}>
-        <SvgDeck />
-        <span>{deck.name}</span>
-      </Link>
-    </SidebarMenuButton>
+    <SidebarMenuItem key={`deck-${deck.id}`}>
+      <SidebarMenuButton asChild className="truncate w-full ">
+        <Link href={`/deck/${deck.id}/study`}>
+          <SvgDeck />
+          <span>{deck.name}</span>
+        </Link>
+      </SidebarMenuButton>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <SidebarMenuAction>
+            <MoreHorizontal />
+          </SidebarMenuAction>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent side="right" align="start">
+          <DropdownMenuItem>
+            {/* TODO */}
+            <span>Edit Deck</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href={`/cards/${deck.id}/edit`}>
+              <span>Edit Cards</span>
+            </Link>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </SidebarMenuItem>
   )
 
   return (
@@ -89,7 +112,7 @@ export default function AppSidebarContent() {
         <SidebarMenu>
           <SidebarMenuItem className="max-w-full px-1">
             {folders?.map(generateFolderMenu)}
-            {decks?.map(generateDeckMenu)}
+            <SidebarMenu>{decks?.map(generateDeckMenu)}</SidebarMenu>
           </SidebarMenuItem>
         </SidebarMenu>
       </ScrollArea>
