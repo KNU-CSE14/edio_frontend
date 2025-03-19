@@ -1,4 +1,3 @@
-import { CARDS } from "@/src/card/api"
 import { Deck } from "@/src/deck/api"
 import { Folder, GET_FOLDERS_ALL } from "@/src/folder/api"
 import { http, HttpResponse } from "msw"
@@ -9,7 +8,7 @@ const LOGIN = "/oauth2/authorization/google"
 const GET_CATEGORIES = "/api/category"
 const GET_MY_DIRECTORIES = "/api/folder/my-folders"
 const DECK = "/api/deck"
-
+const CARDS = "/api/cards"
 export const completedApi: {
   [key: string]: Method[]
 } = {
