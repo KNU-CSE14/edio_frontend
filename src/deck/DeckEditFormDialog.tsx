@@ -161,7 +161,7 @@ export function DeckEditFormDialog({ deck, children }: DeckEditFormDialog) {
               onValueChange={(value) =>
                 setSelectDirectory(Number.parseInt(value))
               }
-              value={deck?.folderId.toString() ?? ""}
+              defaultValue={deck?.folderId.toString() ?? ""}
             >
               <SelectTrigger id="folder" className="min-h-[44px]">
                 <SelectValue placeholder="선택" />
@@ -184,7 +184,7 @@ export function DeckEditFormDialog({ deck, children }: DeckEditFormDialog) {
               onValueChange={(value) =>
                 setSelectCategory(Number.parseInt(value))
               }
-              value={deck?.categoryId.toString() ?? ""}
+              defaultValue={deck?.categoryId.toString() ?? ""}
             >
               <SelectTrigger id="category" className="min-h-[44px]">
                 <SelectValue placeholder="선택" />
