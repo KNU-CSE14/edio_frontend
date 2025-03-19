@@ -1,4 +1,4 @@
-import DeckEdit from "@/app/deck/[id]/edit/page"
+import DeckEdit from "@/app/cards/[id]/edit/page"
 import { Meta, StoryObj } from "@storybook/react"
 
 const meta = {
