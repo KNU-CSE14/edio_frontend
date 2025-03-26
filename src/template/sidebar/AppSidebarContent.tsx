@@ -1,32 +1,23 @@
 "use client"
 
-import { Deck } from "@/src/deck/api"
+import SidebarDeckMenu from "@/src/template/sidebar/SidebarDeckMenu"
 import { Folder, getAllFolders } from "@/src/folder/api"
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/src/shadcn/components/ui/collapsible"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/src/shadcn/components/ui/dropdown-menu"
 import { ScrollArea } from "@/src/shadcn/components/ui/scroll-area"
 import {
   SidebarContent,
   SidebarMenu,
-  SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSub,
 } from "@/src/shadcn/components/ui/sidebar"
-import SvgDeck from "@/src/shared/icons/SvgDeck"
 import SvgFolder from "@/src/shared/icons/SvgFolder"
 import { useQuery } from "@tanstack/react-query"
-import { ChevronRight, MoreHorizontal } from "lucide-react"
-import Link from "next/link"
+import { ChevronRight } from "lucide-react"
 import { useState } from "react"
 
 export default function AppSidebarContent() {
@@ -36,7 +27,6 @@ export default function AppSidebarContent() {
   const [expandedFolders, setExpandedFolders] = useState<{
     [key: string]: boolean
   }>(JSON.parse(window.localStorage.getItem("expandedFolders") ?? "{}"))
-  if (!data) return <div>loading...</div>
 
   const generateFolderMenu = (folder: Folder) => {
     const isExpanded = !!expandedFolders[folder.id]
@@ -70,41 +60,17 @@ export default function AppSidebarContent() {
             {folder?.subFolders.map(generateFolderMenu)}
           </SidebarMenuSub>
           <SidebarMenuSub className="mr-0 pr-0">
-            {folder.decks.map(generateDeckMenu)}
+            {folder.decks.map((deck) => (
+              <SidebarDeckMenu
+                key={`deck-${deck.id}`}
+                deck={deck}
+              ></SidebarDeckMenu>
+            ))}
           </SidebarMenuSub>
         </CollapsibleContent>
       </Collapsible>
     )
   }
-
-  const generateDeckMenu = (deck: Deck) => (
-    <SidebarMenuItem key={`deck-${deck.id}`}>
-      <SidebarMenuButton asChild className="truncate w-full ">
-        <Link href={`/deck/${deck.id}/study`}>
-          <SvgDeck />
-          <span>{deck.name}</span>
-        </Link>
-      </SidebarMenuButton>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <SidebarMenuAction>
-            <MoreHorizontal />
-          </SidebarMenuAction>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent side="right" align="start">
-          <DropdownMenuItem>
-            {/* TODO */}
-            <span>Edit Deck</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link href={`/cards/${deck.id}/edit`}>
-              <span>Edit Cards</span>
-            </Link>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </SidebarMenuItem>
-  )
 
   return (
     <SidebarContent>
@@ -112,7 +78,11 @@ export default function AppSidebarContent() {
         <SidebarMenu>
           <SidebarMenuItem className="max-w-full px-1">
             {folders?.map(generateFolderMenu)}
-            <SidebarMenu>{decks?.map(generateDeckMenu)}</SidebarMenu>
+            <SidebarMenu>
+              {decks?.map((deck) => (
+                <SidebarDeckMenu key={deck.id} deck={deck}></SidebarDeckMenu>
+              ))}
+            </SidebarMenu>
           </SidebarMenuItem>
         </SidebarMenu>
       </ScrollArea>
