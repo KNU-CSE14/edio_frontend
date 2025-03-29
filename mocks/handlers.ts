@@ -120,8 +120,6 @@ const handlers = [
         categoryId: 1,
         name: `deck name ${id}`,
         description: "sample",
-        isShared: false,
-        isFavorite: false,
       }
     }
     return HttpResponse.json(createFolder())
