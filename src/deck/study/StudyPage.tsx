@@ -21,9 +21,6 @@ export default function StudyPage() {
   const [isRandom, setIsRandom] = useState(true)
   const cards = data?.cards
 
-  const handleStudyType = (event: MouseEvent<HTMLButtonElement>) => {
-    setStudyType(event.currentTarget.value as StudyType)
-  }
   if (!cards?.length)
     return (
       <div className="flex-1 flex justify-center items-center w-full h-full">
@@ -37,6 +34,18 @@ export default function StudyPage() {
         </Card>
       </div>
     )
+  const handleStudyType = (event: MouseEvent<HTMLButtonElement>) => {
+    setStudyType(event.currentTarget.value as StudyType)
+  }
+  const handleMoveButton = (event: MouseEvent<HTMLButtonElement>) => {
+    const direction = event.currentTarget.value
+    if (direction === "left") {
+      setCardIndex((prev) => (prev - 1 + cards.length) % cards.length)
+    } else if (direction === "right") {
+      setCardIndex((prev) => (prev + 1) % cards.length)
+    }
+  }
+
   if (!studyType)
     return (
       <div className="flex w-full h-full items-center justify-center">
@@ -103,40 +112,61 @@ export default function StudyPage() {
           </div>
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
-        <div className="flex-1 min-h-0  w-full flex items-center justify-center">
+        <div className="flex-1 min-h-0  w-full flex items-center justify-center overflow-hidden">
           <div className="flex flex-1 items-center justify-center w-full h-full p-6 gap-6">
-            <Button
-              className="rounded-full"
-              variant={"outline"}
-              size={"icon"}
-              onClick={() =>
-                setCardIndex((prev) =>
-                  prev - 1 < 0 ? cards.length - 1 : prev - 1,
-                )
-              }
-            >
-              <ChevronLeft />
-            </Button>
             {studyType === "overview" && (
-              <OverViewCard card={cards[cardIndex]} />
+              <OverViewCard card={cards[cardIndex]}>
+                <ActionButton handleMoveButton={handleMoveButton} />
+              </OverViewCard>
             )}
             {(studyType === "flip" || studyType === "flip-reverse") && (
               <FlipCard
                 key={cards[cardIndex].id}
                 card={cards[cardIndex]}
                 isReverse={studyType === "flip-reverse"}
-              />
+              >
+                {({ children }) => (
+                  <ActionButton handleMoveButton={handleMoveButton}>
+                    {children}
+                  </ActionButton>
+                )}
+              </FlipCard>
             )}
-            <Button
-              className="rounded-full"
-              variant={"outline"}
-              size={"icon"}
-              onClick={() => setCardIndex((prev) => (prev + 1) % cards.length)}
-            >
-              <ChevronRight />
-            </Button>
           </div>
         </div>
+      </div>
+    </div>
+  )
+}
+function ActionButton({
+  handleMoveButton,
+  children,
+}: {
+  handleMoveButton: (event: MouseEvent<HTMLButtonElement>) => void
+  children?: React.ReactNode
+}) {
+  return (
+    <div className="flex gap-4">
+      <div className="flex flex-1  justify-center">
+        <Button
+          className="rounded-full size-10"
+          variant={"outline"}
+          value={"left"}
+          onClick={handleMoveButton}
+        >
+          <ChevronLeft />
+        </Button>
+      </div>
+      {children}
+      <div className="flex flex-1 justify-center">
+        <Button
+          className="rounded-full size-10"
+          variant={"outline"}
+          value={"right"}
+          onClick={handleMoveButton}
+        >
+          <ChevronRight />
+        </Button>
       </div>
     </div>
   )
