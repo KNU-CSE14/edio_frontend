@@ -15,12 +15,22 @@ import { useState, MouseEvent } from "react"
 type StudyType = "overview" | "flip" | "flip-reverse"
 export default function StudyPage() {
   const { id } = useParams<{ id: string }>() as unknown as { id: number }
-  const { data } = useQuery(getDeckDetail(id))
+  const { data } = useQuery({
+    ...getDeckDetail(id),
+    select(data) {
+      return isRandom
+        ? {
+            ...data,
+            cards: data.cards.sort(() => Math.random() - 0.5),
+          }
+        : data
+    },
+  })
+
   const [cardIndex, setCardIndex] = useState<number>(0)
   const [studyType, setStudyType] = useState<StudyType>()
   const [isRandom, setIsRandom] = useState(true)
   const cards = data?.cards
-
   if (!cards?.length)
     return (
       <div className="flex-1 flex justify-center items-center w-full h-full">
