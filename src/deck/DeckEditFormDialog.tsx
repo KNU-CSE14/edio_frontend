@@ -28,6 +28,7 @@ import { getQueryClient } from "@/src/shared/get-query-client"
 import { toast } from "@/src/shadcn/hooks/use-toast"
 import { ToastAction } from "@/src/shadcn/components/ui/toast"
 import Link from "next/link"
+import Image from "next/image"
 
 export function DeckEditFormDialog({ deck, children }: DeckEditFormDialog) {
   const [open, setOpen] = useState(false)
@@ -254,7 +255,7 @@ export function DeckEditFormDialog({ deck, children }: DeckEditFormDialog) {
               <div className="mt-2">
                 <p className="text-sm text-muted-foreground">{file.name}</p>
                 {file.type.startsWith("image/") && (
-                  <img
+                  <Image
                     src={URL.createObjectURL(file) || "/placeholder.svg"}
                     alt="Preview"
                     className="mt-2 max-w-full h-auto max-h-[200px] rounded-md"

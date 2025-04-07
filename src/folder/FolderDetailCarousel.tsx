@@ -3,7 +3,7 @@
 import { Folder } from "@/src/folder/api"
 import { useEffect, useRef, useState } from "react"
 import { ChevronLeft, ChevronRight, FolderIcon } from "lucide-react"
-import { Card, CardContent, CardTitle } from "@/src/shadcn/components/ui/card"
+import DeckInfoCard from "@/src/deck/DeckInfoCard"
 
 export default function FolderDetailCarousel({
   folderDetail,
@@ -82,10 +82,7 @@ export default function FolderDetailCarousel({
         >
           {folderDetail?.decks.map((deck) => (
             <div key={deck.id} className="card-item flex-shrink-0 w-[220px]">
-              <Card>
-                <CardTitle>{deck.name}</CardTitle>
-                <CardContent>TODO 덱 컴포넌트 연동</CardContent>
-              </Card>
+              <DeckInfoCard deck={deck} />
             </div>
           ))}
         </div>

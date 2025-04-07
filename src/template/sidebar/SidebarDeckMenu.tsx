@@ -16,7 +16,8 @@ import SvgDeck from "@/src/shared/icons/SvgDeck"
 import { MoreHorizontal } from "lucide-react"
 import Link from "next/link"
 import { useRef } from "react"
-type DialogType = "edit" | "delete"
+
+export type DialogType = "edit" | "delete"
 export default function SidebarDeckMenu({ deck }: { deck: Deck }) {
   const dialogTriggerRef = useRef<Map<DialogType, HTMLElement | null>>(
     new Map(),
@@ -68,7 +69,7 @@ export default function SidebarDeckMenu({ deck }: { deck: Deck }) {
         <div className="hidden" ref={setRef("edit")}></div>
       </DeckEditFormDialog>
       <DeckDeleteDialog deckId={deck.id}>
-        <div className="hiddem" ref={setRef("delete")}></div>
+        <div className="hidden" ref={setRef("delete")}></div>
       </DeckDeleteDialog>
     </SidebarMenuItem>
   )

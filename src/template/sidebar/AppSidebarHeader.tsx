@@ -15,6 +15,7 @@ import SvgSearch from "@/src/shared/icons/SvgSearch"
 import SvgWorkspace from "@/src/shared/icons/SvgWorkspace"
 import { DeckEditFormDialog } from "@/src/deck/DeckEditFormDialog"
 import { useRouter } from "next/navigation"
+import DeckSearchDialog from "@/src/deck/DeckSearchDialog"
 
 export default function AppSidebarHeader() {
   const router = useRouter()
@@ -28,11 +29,13 @@ export default function AppSidebarHeader() {
       <section className="flex items-center justify-between p-2 px-5 border-b-2 border-t-2 [&_svg]:size-5">
         <TooltipProvider delayDuration={0}>
           <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant={"ghost"} size={"icon"}>
-                <SvgSearch />
-              </Button>
-            </TooltipTrigger>
+            <DeckSearchDialog>
+              <TooltipTrigger asChild>
+                <Button variant={"ghost"} size={"icon"}>
+                  <SvgSearch />
+                </Button>
+              </TooltipTrigger>
+            </DeckSearchDialog>
             <TooltipContent side="bottom">Search</TooltipContent>
           </Tooltip>
           <Tooltip>

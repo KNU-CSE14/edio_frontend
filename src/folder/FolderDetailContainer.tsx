@@ -37,7 +37,7 @@ export default function FolderDetailContainer() {
   }, [data])
 
   return (
-    <div className="relative overflow-x-hidden p-12">
+    <div className="relative overflow-x-hidden">
       {displayFolders.map((folderDetail) => (
         <FolderDetailCarousel
           key={folderDetail.id}

@@ -24,8 +24,6 @@ export const UpdateForm: Story = {
       categoryId: 1,
       name: "deck name",
       description: "sample",
-      isShared: false,
-      isFavorite: false,
     },
     children: <div>수정 클릭</div>,
   },
