@@ -1,3 +1,4 @@
+import { Method } from "@/mocks/handlers"
 import { getBaseUrl, NetworkError } from "@/src/shared/util/data/common"
 import { serverHeaders } from "@/src/shared/util/data/server-option"
 import { isServer } from "@tanstack/react-query"
@@ -7,7 +8,7 @@ const defaultHeaders: HeadersInit = {
   "Content-Type": "application/json",
   Accept: "application/json",
 }
-
+type PathVariable = `/${string}`
 /**
  * @param path start with /
  * @param parameter
@@ -16,11 +17,18 @@ const defaultHeaders: HeadersInit = {
  */
 export async function getFetch(
   path: string,
-  parameter?: object,
-  option?: RequestInit,
+  {
+    pathVariable,
+    queryString,
+    option,
+  }: {
+    pathVariable?: PathVariable
+    queryString?: object
+    option?: RequestInit
+  } = {},
 ) {
-  const queryString = parameter ? `?${stringify(parameter)}` : ""
-  return fetch(`${getBaseUrl(path)}${path}${queryString}`, {
+  const qs = queryString ? `?${stringify(queryString)}` : ""
+  return fetch(`${getBaseUrl(path)}${path}${pathVariable ?? qs}`, {
     credentials: "include",
     ...option,
     headers: isServer
@@ -42,18 +50,28 @@ export async function getFetch(
  */
 export async function formFetch(
   path: string,
-  content?: BodyInit,
-  option?: RequestInit,
+  {
+    parameter,
+    option,
+    pathVariable,
+  }: {
+    parameter?: BodyInit
+    option?: RequestInit
+    pathVariable?: PathVariable
+  } = {},
 ) {
-  return fetch(`${getBaseUrl(path, "POST")}${path}`, {
-    method: "POST",
-    credentials: "include",
-    ...option,
-    headers: isServer
-      ? await serverHeaders(option?.headers)
-      : (option?.headers ?? {}),
-    body: content,
-  }).then((res) => {
+  return fetch(
+    `${getBaseUrl(path, (option?.method ?? "POST") as Method)}${path}${pathVariable ?? ""}`,
+    {
+      method: "POST",
+      credentials: "include",
+      ...option,
+      headers: isServer
+        ? await serverHeaders(option?.headers)
+        : (option?.headers ?? {}),
+      body: parameter,
+    },
+  ).then((res) => {
     if (!res.ok) throw new NetworkError({ code: res.status })
     return res.headers.get("Content-Type") === "application/json"
       ? res.json()
