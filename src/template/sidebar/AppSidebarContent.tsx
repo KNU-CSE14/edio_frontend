@@ -18,15 +18,15 @@ import {
 import SvgFolder from "@/src/shared/icons/SvgFolder"
 import { useQuery } from "@tanstack/react-query"
 import { ChevronRight } from "lucide-react"
-import { useState } from "react"
+import useLocalStorage from "@/src/shared/hooks/useLocalStorage"
 
 export default function AppSidebarContent() {
   const { data } = useQuery(getAllFolders())
   const decks = data?.decks
   const folders = data?.subFolders
-  const [expandedFolders, setExpandedFolders] = useState<{
+  const [expandedFolders, setExpandedFolders] = useLocalStorage<{
     [key: string]: boolean
-  }>(JSON.parse(window.localStorage.getItem("expandedFolders") ?? "{}"))
+  }>("expandedFolders", {})
 
   const generateFolderMenu = (folder: Folder) => {
     const isExpanded = !!expandedFolders[folder.id]
@@ -36,15 +36,10 @@ export default function AppSidebarContent() {
           className="flex items-center justify-start"
           asChild
           onClick={() => {
-            const nextExpanded = {
-              ...expandedFolders,
+            setExpandedFolders((prev) => ({
+              ...prev,
               [folder.id]: !isExpanded,
-            }
-            setExpandedFolders(nextExpanded)
-            window.localStorage.setItem(
-              "expandedFolders",
-              JSON.stringify(nextExpanded),
-            )
+            }))
           }}
         >
           <SidebarMenuButton>
