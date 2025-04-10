@@ -255,11 +255,14 @@ export function DeckEditFormDialog({ deck, children }: DeckEditFormDialog) {
               <div className="mt-2">
                 <p className="text-sm text-muted-foreground">{file.name}</p>
                 {file.type.startsWith("image/") && (
-                  <Image
-                    src={URL.createObjectURL(file) || "/placeholder.svg"}
-                    alt="Preview"
-                    className="mt-2 max-w-full h-auto max-h-[200px] rounded-md"
-                  />
+                  <div className="max-w-full h-[200px] relative">
+                    <Image
+                      src={URL.createObjectURL(file) || "/placeholder.svg"}
+                      alt="Preview"
+                      fill
+                      className="mt-2 rounded-md object-contain"
+                    />
+                  </div>
                 )}
               </div>
             )}
