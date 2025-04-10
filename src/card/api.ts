@@ -11,18 +11,19 @@ export async function updateCards(
       formData.append(`requests[${index}].${key}`, value)
     }
   }
-  return formFetch(CARDS, formData, {
-    method: "POST",
-  })
+  return formFetch(CARDS, { parameter: formData })
 }
 
 export async function deleteCards(parameter: {
   deckId: number
   cardIds: string[]
 }): Promise<Response> {
-  return formFetch(CARDS, JSON.stringify(parameter), {
-    method: "DELETE",
-    headers: { "Content-Type": "application/json" },
+  return formFetch(CARDS, {
+    parameter: JSON.stringify(parameter),
+    option: {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+    },
   })
 }
 

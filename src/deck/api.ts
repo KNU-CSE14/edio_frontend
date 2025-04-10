@@ -39,8 +39,8 @@ export function createNewDeck(
     formData.append("file", createRequest.file!)
   }
 
-  return formFetch(REQ_DECK, formData, {
-    method: "POST",
+  return formFetch(REQ_DECK, {
+    parameter: formData,
   })
 }
 
@@ -50,22 +50,29 @@ export function updateDeck(updateRequest: DeckEditWithFileReq): Promise<void> {
   formData.append("request", JSON.stringify(updateRequest.request))
   formData.append("file", updateRequest.file!)
 
-  return formFetch(REQ_DECK, formData, {
-    method: "PATCH",
+  return formFetch(REQ_DECK, {
+    parameter: formData,
+    option: {
+      method: "PATCH",
+    },
   })
 }
 
 export function getDeckDetail(deckId: number) {
   return queryOptions({
     queryKey: [GET_DECK, deckId],
-    queryFn: (): Promise<DeckDetail> => getFetch(GET_DECK, { id: deckId }),
+    queryFn: (): Promise<DeckDetail> =>
+      getFetch(GET_DECK, { pathVariable: `/${deckId}` }),
     staleTime: Infinity,
   })
 }
 
 export function deleteDeck(id: number): Promise<void> {
-  return formFetch(REQ_DECK, JSON.stringify({ id }), {
-    method: "DELETE",
-    headers: { "Content-Type": "application/json" },
+  return formFetch(REQ_DECK, {
+    pathVariable: `/${id}`,
+    option: {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+    },
   })
 }

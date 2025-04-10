@@ -16,7 +16,7 @@ export const completedApi: {
   [GET_ACCOUNT]: ["GET"],
   [GET_CATEGORIES]: ["GET"],
   [GET_MY_DIRECTORIES]: ["GET"],
-  [DECK]: ["POST", "GET"],
+  [DECK]: ["POST", "GET", "DELETE"],
   [GET_FOLDERS_ALL]: ["GET"],
   [CARDS]: ["POST", "DELETE"],
 }
