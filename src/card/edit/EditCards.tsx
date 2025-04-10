@@ -10,14 +10,16 @@ import { getUpdatedFields, createDummyFile } from "@/src/card/edit/util"
 import { getDeckDetail } from "@/src/deck/api"
 import { toast } from "@/src/shadcn/hooks/use-toast"
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query"
-import { useParams } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import { useState, useRef, FormEvent } from "react"
 import { useForm, useFieldArray } from "react-hook-form"
+import { ToastAction } from "@/src/shadcn/components/ui/toast"
 
 export default function CardEdit() {
   const { id } = useParams<{ id: string }>() as unknown as { id: number }
   const { data } = useQuery(getDeckDetail(id))
   const queryClient = useQueryClient()
+  const route = useRouter()
   const cards: CardForForm[] =
     data?.cards.map(({ attachments, id, ...card }) => ({
       ...card,
@@ -54,6 +56,22 @@ export default function CardEdit() {
     mutationFn: mutateCards,
     onSuccess: () => {
       queryClient.invalidateQueries(getDeckDetail(id))
+      toast({
+        title: "Cards updated!",
+        description: "Cards updated successfully",
+        action: (
+          <ToastAction altText="Try again" asChild>
+            <Button
+              variant="outline"
+              onClick={() => {
+                route.push(`/deck/${id}/study`)
+              }}
+            >
+              Go to study
+            </Button>
+          </ToastAction>
+        ),
+      })
     },
     onError: () => {
       toast({
@@ -140,7 +158,7 @@ export default function CardEdit() {
           <ScrollArea className="w-full border-r border-gray-200" type="auto">
             <ul className="p-3">
               {fields.map((card, index) => (
-                <li key={card.key}>
+                <li key={card.key} className="flex justify-center">
                   <CardForm
                     card={card}
                     index={index}
