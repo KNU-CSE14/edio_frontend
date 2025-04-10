@@ -38,7 +38,7 @@ export const getFileSrc = (
   file?: File | string,
 ) => {
   if (file instanceof File && file.size) return URL.createObjectURL(file)
-  if (typeof file === "string") {
+  if (typeof file === "string" || file === undefined) {
     return attachments.find((v) => v.fileType.startsWith(type))?.filePath ?? ""
   }
   return ""
