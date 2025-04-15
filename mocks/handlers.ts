@@ -1,5 +1,5 @@
 import { Deck } from "@/src/deck/api"
-import { Folder, GET_FOLDERS_ALL } from "@/src/folder/api"
+import { CREATE_FOLDER, Folder, GET_FOLDERS_ALL } from "@/src/folder/api"
 import { http, HttpResponse } from "msw"
 
 export type Method = "GET" | "POST" | "PUT" | "DELETE" | "HEAD" | "PATCH"
@@ -19,6 +19,7 @@ export const completedApi: {
   [DECK]: ["POST", "GET"],
   [GET_FOLDERS_ALL]: ["GET"],
   [CARDS]: ["POST", "DELETE"],
+  [CREATE_FOLDER]: ["POST"],
 }
 
 const handlers = [
@@ -151,6 +152,20 @@ const handlers = [
   http.patch(`${process.env.NEXT_PUBLIC_MSW_URL}${DECK}`, () => {
     return new HttpResponse(null, { status: 200 })
   }),
+
+  http.post(
+    `${process.env.NEXT_PUBLIC_MSW_URL}${CREATE_FOLDER}`,
+    async ({ request }) => {
+      const data = (await request.json()) as {
+        name: string
+        parentId: number | null
+      }
+      return HttpResponse.json({
+        id: Math.floor(Math.random() * 1000) + 100,
+        name: data.name,
+      })
+    },
+  ),
 ]
 
 export default handlers

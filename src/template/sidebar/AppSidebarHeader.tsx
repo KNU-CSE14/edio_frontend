@@ -16,6 +16,7 @@ import SvgWorkspace from "@/src/shared/icons/SvgWorkspace"
 import { DeckEditFormDialog } from "@/src/deck/DeckEditFormDialog"
 import { useRouter } from "next/navigation"
 import DeckSearchDialog from "@/src/deck/DeckSearchDialog"
+import { FolderCreateDialog } from "@/src/folder/FolderCreateDialog"
 
 export default function AppSidebarHeader() {
   const router = useRouter()
@@ -49,11 +50,13 @@ export default function AppSidebarHeader() {
             <TooltipContent side="bottom">Add Deck</TooltipContent>
           </Tooltip>
           <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant={"ghost"} size={"icon"}>
-                <SvgAddFolder />
-              </Button>
-            </TooltipTrigger>
+            <FolderCreateDialog>
+              <TooltipTrigger asChild>
+                <Button variant={"ghost"} size={"icon"}>
+                  <SvgAddFolder />
+                </Button>
+              </TooltipTrigger>
+            </FolderCreateDialog>
             <TooltipContent side="bottom">Add Folder</TooltipContent>
           </Tooltip>
           <Tooltip>
