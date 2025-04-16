@@ -16,7 +16,7 @@ import SvgWorkspace from "@/src/shared/icons/SvgWorkspace"
 import { DeckEditFormDialog } from "@/src/deck/DeckEditFormDialog"
 import { useRouter } from "next/navigation"
 import DeckSearchDialog from "@/src/deck/DeckSearchDialog"
-import { FolderCreateDialog } from "@/src/folder/FolderCreateDialog"
+import FolderCreateDialog from "@/src/folder/FolderCreateDialog"
 
 export default function AppSidebarHeader() {
   const router = useRouter()
