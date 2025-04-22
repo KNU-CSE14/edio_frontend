@@ -58,8 +58,11 @@ export function getFlatFolders() {
 export function createFolder(
   request: CreateFolderRequest,
 ): Promise<CreateFolderResponse> {
-  return formFetch(CREATE_FOLDER, JSON.stringify(request), {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
+  return formFetch(CREATE_FOLDER, {
+    parameter: JSON.stringify(request),
+    option: {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    },
   })
 }
