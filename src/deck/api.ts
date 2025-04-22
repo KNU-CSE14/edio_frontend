@@ -26,7 +26,7 @@ export type Deck = {
 export type DeckDetail = Deck & {
   cards: Card[]
 }
-
+export type StudyType = "overview" | "flip" | "flip-reverse"
 export const queryKey = [REQ_DECK]
 
 export function createNewDeck(
