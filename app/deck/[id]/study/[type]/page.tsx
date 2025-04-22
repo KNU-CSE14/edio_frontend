@@ -2,9 +2,11 @@ import { getDeckDetail, StudyType } from "@/src/deck/api"
 import StudyPage from "@/src/deck/study/StudyPage"
 import { getQueryClient } from "@/src/shared/get-query-client"
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query"
-type StudyPageProps = { id: number; type: StudyType }
-
-export default async function page(params: StudyPageProps) {
+export default async function page({
+  params,
+}: {
+  params: { id: number; type: StudyType }
+}) {
   const queryClient = getQueryClient()
   try {
     await queryClient.fetchQuery(getDeckDetail(params.id))
