@@ -19,7 +19,7 @@ export const completedApi: {
   [DECK]: ["POST", "GET", "DELETE"],
   [GET_FOLDERS_ALL]: ["GET"],
   [CARDS]: ["POST", "DELETE"],
-  [CREATE_FOLDER]: ["POST"],
+  [CREATE_FOLDER]: ["POST", "DELETE"],
 }
 
 const handlers = [

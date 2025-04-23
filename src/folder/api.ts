@@ -66,3 +66,12 @@ export function createFolder(
     },
   })
 }
+
+export function deleteFolder(id: number): Promise<void> {
+  return formFetch(CREATE_FOLDER, {
+    pathVariable: `/${id}`,
+    option: {
+      method: "DELETE",
+    },
+  })
+}
