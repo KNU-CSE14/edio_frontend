@@ -9,7 +9,10 @@ export default async function page({
 }) {
   const queryClient = getQueryClient()
   try {
-    await queryClient.fetchQuery(getDeckDetail(params.id))
+    await queryClient.fetchQuery({
+      ...getDeckDetail(params.id),
+      staleTime: 1000,
+    })
   } catch (err) {
     /// TODO: handle error
   }
