@@ -17,6 +17,7 @@ import { DeckEditFormDialog } from "@/src/deck/DeckEditFormDialog"
 import { useRouter } from "next/navigation"
 import DeckSearchDialog from "@/src/deck/DeckSearchDialog"
 import FolderCreateDialog from "@/src/folder/FolderCreateDialog"
+import { overlay } from "overlay-kit"
 
 export default function AppSidebarHeader() {
   const router = useRouter()
@@ -50,13 +51,19 @@ export default function AppSidebarHeader() {
             <TooltipContent side="bottom">Add Deck</TooltipContent>
           </Tooltip>
           <Tooltip>
-            <FolderCreateDialog>
-              <TooltipTrigger asChild>
-                <Button variant={"ghost"} size={"icon"}>
-                  <SvgAddFolder />
-                </Button>
-              </TooltipTrigger>
-            </FolderCreateDialog>
+            <TooltipTrigger asChild>
+              <Button
+                variant={"ghost"}
+                size={"icon"}
+                onClick={() =>
+                  overlay.open(({ close, isOpen }) => (
+                    <FolderCreateDialog open={isOpen} onOpenChange={close} />
+                  ))
+                }
+              >
+                <SvgAddFolder />
+              </Button>
+            </TooltipTrigger>
             <TooltipContent side="bottom">Add Folder</TooltipContent>
           </Tooltip>
           <Tooltip>
