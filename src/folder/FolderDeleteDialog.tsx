@@ -20,7 +20,13 @@ import { useRouter } from "next/navigation"
 export default function FolderDeleteDialog({
   children,
   folderId,
-}: { folderId: number; children: React.ReactNode } & DialogProps) {
+  open,
+  onOpenChange,
+}: {
+  folderId: number
+  children?: React.ReactNode
+  onOpenChange: (open: boolean) => void
+} & DialogProps) {
   const queryClient = useQueryClient()
   const route = useRouter()
   const deleteFolderMutation = useMutation({
@@ -30,6 +36,7 @@ export default function FolderDeleteDialog({
       toast({
         title: "Folder deleted!",
       })
+      onOpenChange(false)
       route.push("/")
     },
     onError: () => {
@@ -44,7 +51,7 @@ export default function FolderDeleteDialog({
   }
 
   return (
-    <AlertDialog>
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>

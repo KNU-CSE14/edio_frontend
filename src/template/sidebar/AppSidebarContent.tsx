@@ -1,8 +1,6 @@
 "use client"
 
-import SidebarDeckMenu, {
-  DialogType,
-} from "@/src/template/sidebar/SidebarDeckMenu"
+import SidebarDeckMenu from "@/src/template/sidebar/SidebarDeckMenu"
 import { Folder, getAllFolders } from "@/src/folder/api"
 import {
   Collapsible,
@@ -29,7 +27,8 @@ import {
   DropdownMenuTrigger,
 } from "@/src/shadcn/components/ui/dropdown-menu"
 import FolderDeleteDialog from "@/src/folder/FolderDeleteDialog"
-import { useRef } from "react"
+import { overlay } from "overlay-kit"
+import FolderEditDialog from "@/src/folder/FolderEditDialog"
 
 export default function AppSidebarContent() {
   const { data } = useQuery(getAllFolders())
@@ -38,13 +37,6 @@ export default function AppSidebarContent() {
   const [expandedFolders, setExpandedFolders] = useLocalStorage<{
     [key: string]: boolean
   }>("expandedFolders", {})
-  const dialogTriggerRef = useRef<Map<DialogType, HTMLElement | null>>(
-    new Map(),
-  )
-  const getRef = (id: DialogType) => dialogTriggerRef.current?.get(id)
-  const setRef = (id: DialogType) => (node: HTMLElement | null) => {
-    dialogTriggerRef.current.set(id, node)
-  }
   const generateFolderMenu = (folder: Folder) => {
     const isExpanded = !!expandedFolders[folder.id]
     const hasSubFolder = !!folder?.subFolders.length
@@ -79,15 +71,31 @@ export default function AppSidebarContent() {
                 <DropdownMenuItem
                   onClick={(e) => e.stopPropagation()}
                   onSelect={() => {
-                    getRef("delete")?.click()
+                    overlay.open(({ close, isOpen }) => (
+                      <FolderDeleteDialog
+                        open={isOpen}
+                        onOpenChange={close}
+                        folderId={folder.id}
+                      />
+                    ))
                   }}
                   asChild
                 >
                   <span>Delete Deck</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem
+                  onClick={(e) => e.stopPropagation()}
                   onSelect={() => {
-                    ///TODO: getRef("edit")?.click()
+                    overlay.open(({ close, isOpen }) => {
+                      return (
+                        <FolderEditDialog
+                          key={`folder-${folder.id}-modal`}
+                          open={isOpen}
+                          folder={folder}
+                          onOpenChange={close}
+                        ></FolderEditDialog>
+                      )
+                    })
                   }}
                   asChild
                 >
@@ -95,9 +103,6 @@ export default function AppSidebarContent() {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <FolderDeleteDialog folderId={folder.id}>
-              <div className="hidden" ref={setRef("delete")}></div>
-            </FolderDeleteDialog>
           </SidebarMenuItem>
         </CollapsibleTrigger>
         <CollapsibleContent>
@@ -123,7 +128,6 @@ export default function AppSidebarContent() {
       </Collapsible>
     )
   }
-
   return (
     <SidebarContent>
       <ScrollArea
