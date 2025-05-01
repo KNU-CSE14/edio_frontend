@@ -14,6 +14,7 @@ export type FolderMeta = {
 export type Folder = FolderMeta & {
   subFolders: Folder[]
   decks: Deck[]
+  parentId?: number
 }
 
 export type CreateFolderRequest = {
@@ -39,13 +40,22 @@ export function getAllFolders() {
   return queryOptions({
     queryKey: getFoldersAllKey,
     queryFn: (): Promise<Folder> => getFetch(GET_FOLDERS_ALL),
+    select: selectWithParentId,
     staleTime: Infinity,
   })
 }
+const selectWithParentId = (folder: Folder): Folder => ({
+  ...folder,
+  subFolders: folder.subFolders.map((subFolder) => ({
+    parentId: folder.id,
+    ...selectWithParentId(subFolder),
+  })),
+})
+
 const flatFolders = (folders: Folder[]): Folder[] =>
-  folders.flatMap((folder) => [
-    { ...folder },
-    ...flatFolders(folder.subFolders),
+  folders.flatMap(({ subFolders, ...folder }) => [
+    { ...folder, subFolders: [] },
+    ...flatFolders(subFolders),
   ])
 
 export function getFlatFolders() {
