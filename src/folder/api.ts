@@ -76,6 +76,56 @@ export function createFolder(
     },
   })
 }
+export function renameFolder({
+  id,
+  parameter,
+}: {
+  id: number
+  parameter: { name: string }
+}): Promise<CreateFolderResponse> {
+  return formFetch(CREATE_FOLDER, {
+    pathVariable: `/${id}`,
+    parameter: JSON.stringify(parameter),
+    option: {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+    },
+  })
+}
+export function moveFolder({
+  id,
+  parameter,
+}: {
+  id: number
+  parameter: { parentId: number }
+}): Promise<CreateFolderResponse> {
+  return formFetch(CREATE_FOLDER, {
+    pathVariable: `/${id}/position`,
+    parameter: JSON.stringify(parameter),
+    option: {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+    },
+  })
+}
+export async function mutateFolder({
+  id,
+  name,
+  moveTo,
+}: {
+  id: number
+  name?: string
+  moveTo?: number
+}): Promise<void> {
+  await Promise.all([
+    name !== undefined
+      ? renameFolder({ id, parameter: { name } })
+      : Promise.resolve(),
+    moveTo !== undefined
+      ? moveFolder({ id, parameter: { parentId: moveTo } })
+      : Promise.resolve(),
+  ])
+}
 
 export function deleteFolder(id: number): Promise<void> {
   return formFetch(CREATE_FOLDER, {
