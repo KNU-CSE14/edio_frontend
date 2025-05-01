@@ -1,5 +1,5 @@
 import { Deck } from "@/src/deck/api"
-import { CREATE_FOLDER, Folder, GET_FOLDERS_ALL } from "@/src/folder/api"
+import { Folder } from "@/src/folder/api"
 import { http, HttpResponse } from "msw"
 
 export type Method = "GET" | "POST" | "PUT" | "DELETE" | "HEAD" | "PATCH"
@@ -9,6 +9,9 @@ const GET_CATEGORIES = "/api/category"
 const GET_MY_DIRECTORIES = "/api/folder/my-folders"
 const DECK = "/api/deck"
 const CARDS = "/api/cards"
+const GET_FOLDERS_ALL = "/api/folder/all"
+const FOLDER = "/api/folder"
+
 export const completedApi: {
   [key: string]: Method[]
 } = {
@@ -19,7 +22,7 @@ export const completedApi: {
   [DECK]: ["POST", "GET", "DELETE"],
   [GET_FOLDERS_ALL]: ["GET"],
   [CARDS]: ["POST", "DELETE"],
-  [CREATE_FOLDER]: ["POST", "DELETE"],
+  [FOLDER]: ["POST", "DELETE", "PATCH"],
 }
 
 const handlers = [
@@ -154,7 +157,7 @@ const handlers = [
   }),
 
   http.post(
-    `${process.env.NEXT_PUBLIC_MSW_URL}${CREATE_FOLDER}`,
+    `${process.env.NEXT_PUBLIC_MSW_URL}${FOLDER}`,
     async ({ request }) => {
       const data = (await request.json()) as {
         name: string
